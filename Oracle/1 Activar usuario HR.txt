@@ -1,0 +1,32 @@
+Nota: 
+* Puerto -1521/orcl
+* Ruta de instalacion: c:\app
+
+OBS 1: Accedemos por línea de comando y nos logueamos por el usuario sys.
+- c:\users\enrique>sqlplus
+	-> usera-name: sys as sysdba
+	-> password: admin123
+	sql > show user:
+		user is "sys"
+
+** Activar el usuario hr
+sql > alter user hr identified by hr account unlock
+sql > disconnect
+sql > host cls(limpiar)
+sql > connect
+	user-name: hr
+	password:
+sql > show user
+
+** Loqueamos como super usuarios
+c:\users\Enrique>sqlplus / as sysdba
+
+sql > L (lista de últimos comandos)
+sql > save myFile (GUARDA COMANDOS)
+sql > edit myFile (EDIT COMANDOS)
+sql > Get myFile (OBTIENE CON TODOS CAMBIOS)
+sql > li
+	1 select employee_id
+	2 from employees
+	3 where employee_id = 106
+
