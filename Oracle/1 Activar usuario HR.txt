@@ -29,4 +29,22 @@ sql > li
 	1 select employee_id
 	2 from employees
 	3 where employee_id = 106
+sql > C/106/110 (CAMBIAR DATO)
+	3* where employee_id = 110
+sql > save myFile replace
+sql > start myFile
+Error linea2 ....
+El usuario debe de indicar a que esuqema pertenece. Estamos como super usuario.
+sql > edit myFile
+	-> from hr.employees
+sql > Get myFile
+sql > list
+sql > start myFile
+sql > c/110/106
+sql > save myFile Append
+	(guarda al final del archivo)
+	sql > @myFile (inicia o habre los comandos y muestra los resultados)
 
+** Esquema HR
+- Describe jobs -> Tipos de columnas.
+- "Hola Daniel" -> Las comillas es para que acepte espacios.
