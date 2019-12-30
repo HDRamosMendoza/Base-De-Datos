@@ -22,3 +22,16 @@
 
         -> New Layer.
         Si se llega a este punto. Si en tu interfaz se nuestra NEW LAYER >>> Conexión exitosa con POSTGIS.
+
+        EXTRA:
+        En la capa de sección de "public".
+        En BOUNDING BOXES > 
+            * DATA
+                'Native Bounding Box'. Dar clic en "Compute from data" y en
+                'Lat/Lon Bounding Box. Dar clic en "Compute from native bounds".
+            * PUBLISHING
+                Default Style: polygon
+            
+        NOTA:
+            DATA > Layers => Lista de capas.
+            DATA > Layer Preview => Lista de previsualización
