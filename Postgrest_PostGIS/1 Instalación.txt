@@ -1,0 +1,9 @@
+* Pasos para descargar postgrest postgis.
+    1. https://www.postgresql.org/
+    2. Clic en botón descargar.
+    3. PostgreSQL Core Distribution > Binary packages > WINDOWS(clic y empieza la descarga).
+        Nota en caso de que no se inicialice STACK BUILDER. Buscar en windows APPLICATION STACK BUILDER.
+    4. En STACK BUILDER.
+    5. Seleccionar: PostgreSQL 9.x (x64) on port 5432
+    5. Elija. Categories > Spatial Extensions > PostGIS X.X Bundle for PostgreSQL x.x(64bit) Vx.x
+    6. Postgre(usuario).
