@@ -1,0 +1,12 @@
+Web mapping: PostGIS + Geoserver + QGis + Leaflet
+
+    1. Asociar a VARIABLE de SISTEMA. Crear JAVA_HOME y asociar C:\Program Files\Java\jre1.8.0_91.
+    2. Asociar a VARIABLE de SISTEMA. Crear JAVA_BIN y asociar %JAVA_HOME%\bin
+    3. Asociar a VARIABLE de SISTEMA. Crear CATALINA_HOME y asociar C:\apache-tomcat-9.0.0.x86
+    3. Asociar a VARIABLE de SISTEMA. Crear CATALINA_BIN y asociar %CATALINA_HOME%\bin
+    4. En la variable "Path". Agregar %JAVA_BIN%;%CATALINA_BIN%
+
+    5. CMD => java -version
+    6. Ir a la carpeta "bin" y darle "startup".
+    
+
