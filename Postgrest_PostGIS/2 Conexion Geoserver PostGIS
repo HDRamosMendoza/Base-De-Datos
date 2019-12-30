@@ -1,0 +1,24 @@
+* Pasos para conectar con GEOSERVER y POSTGIS.
+
+    1. Identificamos la tabla(subdistrict) en PostGIS.
+    2. En GeoServer > Workspaces > Add new Workspaces
+        Name: sattawat
+        Namespace URI: localhost:8080/geoserver/sattawat
+        Check en: Default Workspaces
+    3. En GeoServer > Stores > Add new Store > PostGIS
+        New Vector Data Source
+        * Basic Store Info
+            - Workspace: sattawat
+            - Data Source Name: sattawat
+            - Description: sattawat
+            Check en: Enabled
+        * Connection Parameters
+        host: localhost
+        port: 8082
+        database: sattawat
+        schema: public
+        user: postgres
+        Password: *****
+
+        -> New Layer.
+        Si se llega a este punto. Si en tu interfaz se nuestra NEW LAYER >>> Conexión exitosa con POSTGIS.
