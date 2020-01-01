@@ -2,7 +2,7 @@ Nota:
 * Puerto -1521/orcl
 * Ruta de instalacion: c:\app
 
-OBS 1: Accedemos por línea de comando y nos logueamos por el usuario sys.
+OBS 1: Accedemos por lï¿½nea de comando y nos logueamos por el usuario sys.
 - c:\users\enrique>sqlplus
 	-> usera-name: sys as sysdba
 	-> password: admin123
@@ -21,7 +21,7 @@ sql > show user
 ** Loqueamos como super usuarios
 c:\users\Enrique>sqlplus / as sysdba
 
-sql > L (lista de últimos comandos)
+sql > L (lista de ï¿½ltimos comandos)
 sql > save myFile (GUARDA COMANDOS)
 sql > edit myFile (EDIT COMANDOS)
 sql > Get myFile (OBTIENE CON TODOS CAMBIOS)
@@ -48,3 +48,5 @@ sql > save myFile Append
 ** Esquema HR
 - Describe jobs -> Tipos de columnas.
 - "Hola Daniel" -> Las comillas es para que acepte espacios.
+
+*** ESTA PENDIENTE SUBIR LAS ANOTACIONES DEL CUADERNO DE APUNTES
