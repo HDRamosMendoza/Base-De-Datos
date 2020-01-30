@@ -1,0 +1,24 @@
+Arquitectura de un servidor de bases de datos. Oracle.
+
+Que es un base de datos. Es una recopilacion de datos que se trata como 
+unidad. El objetivo es alamacenar y recuperar informacion relacionada.
+
+Que es una instancia.Es una combinacion de procesos en segundo plano y las estructuras de memoria.
+El sistema de gestion de datos relacionales de oracle permite de manera confiable  multiples usuarios 
+puedan acceder a los mismo datos al mismo tiempo e impiden el acceso  a personas no autorizadas.
+
+* Estructura de memoria. No sirve para almacenar la sesion de nuestros usuarios conectados.
+	Hay dos estructuras basicas:
+	- La system Global Area(SGA).
+		Grupo de estructuras en la memoria compartidad que contiene datos e informacion de control de una
+		instancia en la base de datos. En ella podemos encontrar.
+		Shared Pool. La que almacena la cahce que podamos compartir
+	1:20
+	- Program Global Area(PGA).
+	
+
+* Eastructura de proceso.
+
+* Estructura de almacenamiento.
+
+Fuente: https://www.youtube.com/watch?v=xJ39_K5UYT8
