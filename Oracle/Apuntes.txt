@@ -7,17 +7,33 @@ Que es una instancia.Es una combinacion de procesos en segundo plano y las estru
 El sistema de gestion de datos relacionales de oracle permite de manera confiable  multiples usuarios 
 puedan acceder a los mismo datos al mismo tiempo e impiden el acceso  a personas no autorizadas.
 
-* Estructura de memoria. No sirve para almacenar la sesion de nuestros usuarios conectados.
+1. Estructura de memoria. No sirve para almacenar la sesion de nuestros usuarios conectados.
 	Hay dos estructuras basicas:
 	- La system Global Area(SGA).
-		Grupo de estructuras en la memoria compartidad que contiene datos e informacion de control de una
+		Se define como un grupo de estructuras en la memoria compartidad que contiene datos e informacion de control de una
 		instancia en la base de datos. En ella podemos encontrar.
-		Shared Pool. La que almacena la cahce que podamos compartir
-	1:20
-	- Program Global Area(PGA).
-	
+		- Shared Pool. La que almacena la cache que podemos compartir mucho usuarios.
+		- Database buffer cache. Que guarda los datos reutizables.
+		- Keep buffer pool. Que permite guardar los datos reutilizables con mayor tiempo.
+		- Recycle buffer pool. Nos ayuda a eliminar o reciclar bloques con rapides.
+		- nK buffer cache. Nos permite matener bloques de tamaños diferentes al tamaño por defecto.
+		- Redog log buffer. Nos permite hacer y deshacer dentro de una instancia.
+		- Large pool. Nos permite matener una enorme cache para cosas tan importantes como copia de seguridad.
+		- Java pool. Van las cosas de JAVA.
+		- Streams pool. Se usan para almacenar información de procesos y aplicarlos.
 
-* Eastructura de proceso.
+	- Program Global Area(PGA). Son las regiones de memorias unicas para cada proceso. No es compartidad y para cada proceso servidor y segundo plano se requiere su propia GPA.
+	
+2. Estructura de procesos. Oracle crea proceso de servidor par manejar la solicitud de sus usuarios conectados con nuestra instancia.
+El proceso representa la aplicacion o herramienta que se conecta con la base de datos oracle.
+Este puede estar en la misma maquina que la base de datos o un cliente remoto utilizando una red par acceder a la base de datos.
+Los procesos servidores pueden realizar una o varias de las sigueintes tres acciones:
+ a. Analizar y ejeuctar sentencias SQL a través de la aplicación de la aplcación.
+ b. Llevar bloques de datos hacia los buffers del SGA.
+ c. Retornar resultados para que una aplicación pueda procesarlos.
+
+ Para máximar el rendimientos e incluir a mas usuarios oracle. Oracle utiliza varios procesos adiconales llamados. Llamados background o segundo plano. Algunos de estyos se crena automatica al iniciar una instancia y otros deben de realizarse de forma manual.
+ 3:35
 
 * Estructura de almacenamiento.
 
