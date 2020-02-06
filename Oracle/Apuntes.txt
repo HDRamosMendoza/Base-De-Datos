@@ -28,13 +28,61 @@ puedan acceder a los mismo datos al mismo tiempo e impiden el acceso  a personas
 El proceso representa la aplicacion o herramienta que se conecta con la base de datos oracle.
 Este puede estar en la misma maquina que la base de datos o un cliente remoto utilizando una red par acceder a la base de datos.
 Los procesos servidores pueden realizar una o varias de las sigueintes tres acciones:
- a. Analizar y ejeuctar sentencias SQL a través de la aplicación de la aplcación.
- b. Llevar bloques de datos hacia los buffers del SGA.
- c. Retornar resultados para que una aplicación pueda procesarlos.
+ 
+ 	1a. Analizar y ejeuctar sentencias SQL a través de la aplicación de la aplcación.
+ 
+ 	2b. Llevar bloques de datos hacia los buffers del SGA.
+ 
+ 	3c. Retornar resultados para que una aplicación pueda procesarlos.
 
- Para máximar el rendimientos e incluir a mas usuarios oracle. Oracle utiliza varios procesos adiconales llamados. Llamados background o segundo plano. Algunos de estyos se crena automatica al iniciar una instancia y otros deben de realizarse de forma manual.
- 3:35
+ 	Para máximar el rendimientos e incluir a mas usuarios oracle. Oracle utiliza varios procesos adiconales llamados. Llamados background o segundo plano. Algunos de estos se crean de manera automatica al iniciar una instancia y otros deben iniciarse de forma manual.
 
-* Estructura de almacenamiento.
+	 Dentro de los 3 procesos mas ilustres tenemos a:
+ 
+ 	1a. El proceso Database Write(DBWn). Encargado de escribir de manera asincrona la información de los buffer de los archivos de datos.
+ 
+ 	2b. El proceso Log Writer (LGWR). Responsable de la gestión de la REDO LOG buffer y estructurara el disco.
+ 
+ 	3c. El proceso CheckpPoint (CKPT). Quien registra la información de puntos o de control de cambios del sistema que nos permite volver a ellos en caso de que lo necesitemos.
+
+ 	4d. El proceso system monitor (SMON). Permite la recuperacion al iniciar una instancia y limpiar los segmentos temporales que no se esten utilziando.
+
+ 	5e. Proceso de recuperacion(REco). Utilizado en base de datos distribuidas para resolver transacciones distribuidas dudosas.
+
+ 	6f. Proceso de archiver(ARCn). Copia los archivos de los REDO log en los dispositivos de almacenamiento asignado despues que se produsca un cambio logo.
+
+
+3. Estructura de almacenamiento.
+	Para guardar los datos oracle. Tiene estructuras fisicas y logicas.
+	Dentro de la estructura fisica esta compuesto por 9 tipos de archivos organizados en:
+
+	- Control files
+	- Data files.
+	- Online redo log files.
+	- Parameter files
+	- Password file.
+	- Backup files.
+	- Archived redo log file. 
+	- Alert log  trace files.
+
+	* Estructura de lógica.
+
+	- Base de datos.
+	- Tablespace.
+	- Segmento
+	- Extent.
+	- Bloque de datos oracle.
+
+	- Segmentos de datos.
+	- Segemtnso de índices.
+	- segmento de rollback.
+	- Segmento Temporal.
+	- Segmentos de bootstrap.
+
+	Bloques de datos.
+
+	
+
+
 
 Fuente: https://www.youtube.com/watch?v=xJ39_K5UYT8
