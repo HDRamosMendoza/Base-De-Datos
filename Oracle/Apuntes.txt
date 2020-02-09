@@ -56,33 +56,31 @@ Los procesos servidores pueden realizar una o varias de las sigueintes tres acci
 	Para guardar los datos oracle. Tiene estructuras fisicas y logicas.
 	Dentro de la estructura fisica esta compuesto por 9 tipos de archivos organizados en:
 
-	- Control files
-	- Data files.
-	- Online redo log files.
-	- Parameter files
-	- Password file.
-	- Backup files.
-	- Archived redo log file. 
-	- Alert log  trace files.
+	- Control files. Contiene información de la propiedad base de datos. Es decir su estructura fisica de ellos. Son muy importantes por que sin ellos no se pueden acceder al archivo de datos. 
+	- Data files. Los archivos de datos son lo que contiene los datos del usuario, metadatos y tambien el dicccionario de datos.
+	- Online redo log files. Permite la recuperacion de una base de datos en linea si el servidor falla y no se pierde los data file la instancia puede recuperar la informacion con estos archivos.
+	- Parameter files. Se utilizan para ver como se configuran la instancia cuando se inicia.
+	- Password file. Permite a los usuarios utilizar roles, sisdb, sis oper para la conexion remota y la realizacion de tareas administativas.
+	- Backup files. Utlizan para la recuperacion de base de datos. Normalmente se restaura  un archivo de copia de seguridad. Cuando a ocurrido una falla por medio fisico o por un usuario que ha dañado un archivo original.
+	- Archived redo log file. Contiene un historial de los cambios de datos redo generado por la instancia. Mediante estos archivos y una copia de seguridad de la base de datos se puede recuperar un archivos de los datos perdidos.
+	Almacena la trasa de cada proceso servidor y de background cuando ocurre un  error. Parte de la informacion escrita en un archivo TRACE. Esta destinada la administracion de base de datos mientras que la otra es para el soporte de Oracle.
+
+	- Alert log  trace files. Guarda la informacion especial del TRACE. El log de alerta es de una base de datos. Es un log cronologicos de mensajes y errores.
 
 	* Estructura de lógica.
+	Cada base de datos esta divida de manera logica en 2 o mas tablespace quienes agrupan archivos de datos o estructura de logicas relacionadas. Por ejm. los tablespace suelen agrupas todos los segmentos de una aplicacion para simplificar algunas aplicaciones de administración.
 
 	- Base de datos.
 	- Tablespace.
-	- Segmento
-	- Extent.
-	- Bloque de datos oracle.
-
-	- Segmentos de datos.
-	- Segemtnso de índices.
-	- segmento de rollback.
-	- Segmento Temporal.
-	- Segmentos de bootstrap.
-
-	Bloques de datos.
-
-	
-
-
+	- Segmentos.
+	- Extent. El exten es un numero espeficio de bloques de disco contiguos guardando un tipo de informacion especifica.
+	Un conjunto de extent es llamado segmento. Existe 5 tipos de segmento:
+		1 Segmentos de datos.
+		2 Segemtnso de índices.
+		3 segmento de rollback.
+		4 Segmento Temporal. Se eliminan cuando la setencia finaliza.
+		5 Segmentos de bootstrap. Que se quedan en system. Las cuales contiene diccionario para sus tablas. No se cargan al abrir la base de datos y no requiere ninguna accion por parte del administrador.
+	- Bloque de datos oracle.El bloque de datos es el nivel mas detallado de granularidad corresponde con una numero concreto de bytes espacio fisico en el disco. Se especifica un tamaño de bloque de byte cuando se crea.
+	Una base de datos utiliza y asigna espacio libre de dla abse de datos concreta em bloques de datos de oracle.
 
 Fuente: https://www.youtube.com/watch?v=xJ39_K5UYT8
