@@ -1,0 +1,242 @@
+-----------------------------------------------------
+
+Author: H. Daniel Ramos Mendoza
+GIS DEVELOPER
+
+-----------------------------------------------------
+-----------------------------------------------------
+* Proyectos de servicios basicos de agua potable y desagûe
+	1.Proyectos de servicios de agua potable
+		Description: Proyectos de servicios, vivienda y espacios públicos
+	2.Proyectos de servicios de desagüe
+		Description: Proyectos de servicios, vivienda y espacios públicos
+  Feature Dataset:	desagdbvivienda.ogei.fd_proys_mvcs
+  Feature Class:	desagdbvivienda.ogei.fc_mvcs_proyectos_utm
+	CAMPO 1: nro_conexiones_nuevas_ubs_ssp 
+	CAMPO 2: conexiones_nuevasssp
+	FILTRO 1: flag_saneamiento = 'Saneamiento'
+	FILTRO 2: estado=concluido
+	FILTRO 3: anio_fin_ob >= 2018
+	
+=> CONSULTA Unidades basicas de Saneamiento
+
+DROP VIEW IF EXISTS v_proyecto_ser_viv_ep;
+CREATE OR REPLACE VIEW v_proyecto_ser_viv_ep AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	project.flag_saneamiento,
+	project.estado,
+	COALESCE(project.conexiones_nuevasssp, 0) AS conexiones_nuevasssp,
+	/* "Total de conexiones nuevas de agua" */
+	COALESCE(project.nro_conexiones_nuevas_ubs_ssp, 0) AS nro_conexiones_nuevas_ubs_ssp,
+	/* "Total de conexiones nuevas de Unidades básicas de Saneamiento" */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado,
+			SUM(proyecto.conexiones_nuevasssp) AS conexiones_nuevasssp,
+			SUM(proyecto.nro_conexiones_nuevas_ubs_ssp) AS nro_conexiones_nuevas_ubs_ssp
+		FROM ogei.fc_mvcs_proyectos_utm proyecto 
+		WHERE 
+			UPPER(proyecto.flag_saneamiento) = UPPER('Saneamiento') AND 
+			UPPER(proyecto.estado) = UPPER('Concluido') AND
+			proyecto.anio_fin_ob >= 2018 
+		GROUP BY 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+
+-----------------------------------------------------
+-----------------------------------------------------
+
+* Proyectos de infraestructura y equipamientos urbano
+  Feature Dataset:	desagdbvivienda.ogei.fd_proys_mvcs
+  Feature Class:	desagdbvivienda.ogei.fc_mvcs_proyectos_utm
+	CAMPO 1: total_transferencias
+	CAMPO 2: total_invertido
+	CAMPO 3: poblacion_beneficiada
+	FILTRO 1: flag_saneamiento = 'Pistas y Veredas'
+	FILTRO 2: estado='Concluido'
+	FILTRO 3: anio_fin_ob >= 2018
+
+=> CONSULTA
+
+DROP VIEW IF EXISTS v_proyecto_inf_equ_urb;
+CREATE OR REPLACE VIEW v_proyecto_inf_equ_urb AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	project.flag_saneamiento,
+	project.estado,
+	COALESCE(project.total_transferencias, 0) AS total_transferencias,
+	/* "Total de transferencia S/." */
+	COALESCE(project.total_invertido, 0) AS total_invertido,
+	/* "Total de invertido S/." */
+	COALESCE(project.poblacion_beneficiada, 0) AS poblacion_beneficiada,	
+	/* "Total de beneficiados" */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado,
+			SUM(proyecto.total_transferencias) AS total_transferencias,
+			SUM(proyecto.total_invertido) AS total_invertido,
+			SUM(proyecto.poblacion_beneficiada) AS poblacion_beneficiada
+		FROM ogei.fc_mvcs_proyectos_utm proyecto 
+		WHERE 
+			UPPER(proyecto.flag_saneamiento) = UPPER('Pistas y Veredas') AND 
+			UPPER(proyecto.estado) = UPPER('Concluido') AND 
+			proyecto.anio_fin_ob >= 2018 
+		GROUP BY 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+		
+-----------------------------------------------------
+-----------------------------------------------------
+
+* Titulación de la vivienda 
+  Feature Class:	desagdbvivienda.ogei.fc_titulos_inscritos
+	CAMPO 1: Total de titulos => total_titulos
+	CAMPO 2: Beneficiados	 => beneficiarios
+	CAMPO 3: Inversión S/	 => inversion
+	FILTRO: anio >= 2018
+	
+=> CONSULTA
+
+DROP VIEW IF EXISTS v_proyecto_tit_viv;
+CREATE OR REPLACE VIEW v_proyecto_tit_viv AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	COALESCE(project.total_titulos, 0) AS total_titulos,
+	/* "Total de títulos" */
+	COALESCE(project.beneficiarios, 0) AS beneficiarios,
+	/* "Total de beneficiados" */
+	COALESCE(project.inversion, 0) AS inversion,
+	/* "Total de inversión S/." */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			titulo.ubigeo,
+			SUM(titulo.total_titulos) AS total_titulos,
+			SUM(titulo.beneficiarios) AS beneficiarios,
+			SUM(titulo.inversion) 	  AS inversion
+		FROM ogei.fc_titulos_inscritos titulo 
+		WHERE titulo.anio IN ('2018','2019','2020','2021','2022','2023','2024','2025') 
+		GROUP BY 
+			titulo.ubigeo
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+	
+-----------------------------------------------------
+-----------------------------------------------------
+
+* Proyectos de vivienda sociales promovidas
+  Feature Class:	desagdbvivienda.ogei.bonos_viviendas_promovidas
+	CAMPO 1: total
+	CAMPO 2: beneficiado
+	CAMPO 3: monto
+	FILTRO: anio >= 2018
+	
+=> CONSULTA
+
+DROP VIEW IF EXISTS v_proyecto_viv_soc_pro;
+CREATE OR REPLACE VIEW v_proyecto_viv_soc_pro AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	COALESCE(project.total, 0) AS total,
+	/* "Total de vivendas promovidas" */
+	COALESCE(project.beneficiarios, 0) AS beneficiarios,
+	/* "Total de beneficiado" */
+	COALESCE(project.monto, 0) AS monto,
+	/* "Monto total S/." */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			proyecto.ubigeo,
+			SUM(proyecto.total) 		AS total,
+			SUM(proyecto.beneficiarios) AS beneficiarios,
+			SUM(proyecto.monto) 		AS monto
+		FROM ogei.bonos_viviendas_promovidas proyecto 
+		WHERE proyecto.anio >= 2018
+		GROUP BY 
+			proyecto.ubigeo 
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+
+-----------------------------------------------------
+-----------------------------------------------------
+
+/* 
+	UBIGEOS NO ENCONTRADOS:
+	'200700','120100','160109','060100','150100','180300','090100','160100','150000','160000','140300'
+*/
+SELECT 
+	DISTINCT(proyecto.ubigeo)
+FROM ogei.fc_mvcs_proyectos_utm proyecto 
+WHERE proyecto.ubigeo 
+	NOT IN (
+		SELECT distrital.id_dist 
+		FROM cartobase.fc_limite_distrital distrital
+	)
+
+/* BÚSQUEDA DE UBIGEO */
+SELECT 
+	distrital.id_dist 
+FROM cartobase.fc_limite_distrital distrital
+WHERE distrital.id_dist = '200700'
+
+------------------------------------------------------
+
+TEST 01
+
+SELECT 
+	SUM(proyecto.conexiones_nuevasssp) AS cant_1 
+FROM ogei.fc_mvcs_proyectos_utm proyecto 
+WHERE 
+	UPPER(proyecto.flag_saneamiento) = UPPER('Saneamiento') AND 
+	UPPER(proyecto.estado) = UPPER('Concluido') AND
+	proyecto.anio_fin_ob >= 2018 AND
+	proyecto.ubigeo IS NOT null
+	
+-------------------------------------------------------
+
+TES 02

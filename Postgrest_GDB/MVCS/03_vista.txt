@@ -1,0 +1,51 @@
+-----------------------------------------------------
+
+Author: H. Daniel Ramos Mendoza
+GIS DEVELOPER
+
+-----------------------------------------------------
+-----------------------------------------------------
+
+* Titulación de la vivienda 
+  Feature Class:	desagdbvivienda.ogei.fc_titulos_inscritos
+	CAMPO 1: Total de titulos => total_titulos
+	CAMPO 2: Beneficiados	 => beneficiarios
+	CAMPO 3: Inversión S/	 => inversion
+	FILTRO: anio >= 2018
+	
+=> CONSULTA
+
+DROP VIEW IF EXISTS v_proyecto_tit_viv;
+CREATE OR REPLACE VIEW v_proyecto_tit_viv AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	COALESCE(project.total_titulos, 0) AS total_titulos,
+	/* "Total de títulos" */
+	COALESCE(project.beneficiarios, 0) AS beneficiarios,
+	/* "Total de beneficiados" */
+	COALESCE(project.inversion, 0) AS inversion,
+	/* "Total de inversión S/." */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			titulo.ubigeo,
+			SUM(titulo.total_titulos) AS total_titulos,
+			SUM(titulo.beneficiarios) AS beneficiarios,
+			SUM(titulo.inversion) 	  AS inversion
+		FROM ogei.fc_titulos_inscritos titulo 
+		WHERE titulo.anio IN ('2018','2019','2020','2021','2022','2023','2024','2025') 
+		GROUP BY 
+			titulo.ubigeo
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+	
+-----------------------------------------------------
+-----------------------------------------------------

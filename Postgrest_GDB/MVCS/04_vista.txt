@@ -1,0 +1,51 @@
+-----------------------------------------------------
+
+Author: H. Daniel Ramos Mendoza
+GIS DEVELOPER
+
+-----------------------------------------------------
+-----------------------------------------------------
+
+* Proyectos de vivienda sociales promovidas
+  Feature Class:	desagdbvivienda.ogei.bonos_viviendas_promovidas
+	CAMPO 1: total
+	CAMPO 2: beneficiado
+	CAMPO 3: monto
+	FILTRO: anio >= 2018
+	
+=> CONSULTA
+
+DROP VIEW IF EXISTS v_proyecto_viv_soc_pro;
+CREATE OR REPLACE VIEW v_proyecto_viv_soc_pro AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	COALESCE(project.total, 0) AS total,
+	/* "Total de vivendas promovidas" */
+	COALESCE(project.beneficiarios, 0) AS beneficiarios,
+	/* "Total de beneficiado" */
+	COALESCE(project.monto, 0) AS monto,
+	/* "Monto total S/." */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			proyecto.ubigeo,
+			SUM(proyecto.total) 		AS total,
+			SUM(proyecto.beneficiarios) AS beneficiarios,
+			SUM(proyecto.monto) 		AS monto
+		FROM ogei.bonos_viviendas_promovidas proyecto 
+		WHERE proyecto.anio >= 2018
+		GROUP BY 
+			proyecto.ubigeo 
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+
+-----------------------------------------------------
+-----------------------------------------------------

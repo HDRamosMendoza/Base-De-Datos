@@ -1,0 +1,63 @@
+-----------------------------------------------------
+
+Author: H. Daniel Ramos Mendoza
+GIS DEVELOPER
+
+-----------------------------------------------------
+-----------------------------------------------------
+
+* Proyectos de infraestructura y equipamientos urbano
+  Feature Dataset:	desagdbvivienda.ogei.fd_proys_mvcs
+  Feature Class:	desagdbvivienda.ogei.fc_mvcs_proyectos_utm
+	CAMPO 1: total_transferencias
+	CAMPO 2: total_invertido
+	CAMPO 3: poblacion_beneficiada
+	FILTRO 1: flag_saneamiento = 'Pistas y Veredas'
+	FILTRO 2: estado='Concluido'
+	FILTRO 3: anio_fin_ob >= 2018
+
+=> CONSULTA
+
+DROP VIEW IF EXISTS v_proyecto_inf_equ_urb;
+CREATE OR REPLACE VIEW v_proyecto_inf_equ_urb AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	project.flag_saneamiento,
+	project.estado,
+	COALESCE(project.total_transferencias, 0) AS total_transferencias,
+	/* "Total de transferencia S/." */
+	COALESCE(project.total_invertido, 0) AS total_invertido,
+	/* "Total de invertido S/." */
+	COALESCE(project.poblacion_beneficiada, 0) AS poblacion_beneficiada,	
+	/* "Total de beneficiados" */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado,
+			SUM(proyecto.total_transferencias) AS total_transferencias,
+			SUM(proyecto.total_invertido) AS total_invertido,
+			SUM(proyecto.poblacion_beneficiada) AS poblacion_beneficiada
+		FROM ogei.fc_mvcs_proyectos_utm proyecto 
+		WHERE 
+			UPPER(proyecto.flag_saneamiento) = UPPER('Pistas y Veredas') AND 
+			UPPER(proyecto.estado) = UPPER('Concluido') AND 
+			proyecto.anio_fin_ob >= 2018 
+		GROUP BY 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+		
+-----------------------------------------------------
+-----------------------------------------------------

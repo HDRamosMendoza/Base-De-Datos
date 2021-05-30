@@ -1,0 +1,63 @@
+-----------------------------------------------------
+
+Author: H. Daniel Ramos Mendoza
+GIS DEVELOPER
+
+-----------------------------------------------------
+-----------------------------------------------------
+
+* Proyectos de servicios basicos de agua potable y desagûe
+	1.Proyectos de servicios de agua potable
+		Description: Proyectos de servicios, vivienda y espacios públicos
+	2.Proyectos de servicios de desagüe
+		Description: Proyectos de servicios, vivienda y espacios públicos
+  Feature Dataset:	desagdbvivienda.ogei.fd_proys_mvcs
+  Feature Class:	desagdbvivienda.ogei.fc_mvcs_proyectos_utm
+	CAMPO 1: nro_conexiones_nuevas_ubs_ssp 
+	CAMPO 2: conexiones_nuevasssp
+	FILTRO 1: flag_saneamiento = 'Saneamiento'
+	FILTRO 2: estado=concluido
+	FILTRO 3: anio_fin_ob >= 2018
+	
+=> CONSULTA Unidades basicas de Saneamiento
+
+DROP VIEW IF EXISTS v_proyecto_ser_viv_ep;
+CREATE OR REPLACE VIEW v_proyecto_ser_viv_ep AS
+SELECT 
+	distrital.objectid,
+	distrital.id_dist AS ubigeo,
+	distrital.nom_dep,
+	distrital.nom_prov,
+	distrital.nom_dist,
+	project.flag_saneamiento,
+	project.estado,
+	COALESCE(project.conexiones_nuevasssp, 0) AS conexiones_nuevasssp,
+	/* "Total de conexiones nuevas de agua" */
+	COALESCE(project.nro_conexiones_nuevas_ubs_ssp, 0) AS nro_conexiones_nuevas_ubs_ssp,
+	/* "Total de conexiones nuevas de Unidades básicas de Saneamiento" */
+	distrital.shape
+FROM cartobase.fc_limite_distrital distrital
+	LEFT JOIN(
+		SELECT 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado,
+			SUM(proyecto.conexiones_nuevasssp) AS conexiones_nuevasssp,
+			SUM(proyecto.nro_conexiones_nuevas_ubs_ssp) AS nro_conexiones_nuevas_ubs_ssp
+		FROM ogei.fc_mvcs_proyectos_utm proyecto 
+		WHERE 
+			UPPER(proyecto.flag_saneamiento) = UPPER('Saneamiento') AND 
+			UPPER(proyecto.estado) = UPPER('Concluido') AND
+			proyecto.anio_fin_ob >= 2018 
+		GROUP BY 
+			proyecto.ubigeo,
+			proyecto.flag_saneamiento,
+			proyecto.estado
+	) project ON distrital.id_dist = project.ubigeo 
+ORDER BY 
+		distrital.nom_dep,
+		distrital.nom_prov,
+		distrital.nom_dist;
+
+-----------------------------------------------------
+-----------------------------------------------------

@@ -1,0 +1,44 @@
+-----------------------------------------------------
+
+Author: H. Daniel Ramos Mendoza
+GIS DEVELOPER
+
+-----------------------------------------------------
+-----------------------------------------------------
+
+
+/* 
+	UBIGEOS NO ENCONTRADOS:
+	'200700','120100','160109','060100','150100','180300','090100','160100','150000','160000','140300'
+*/
+SELECT 
+	DISTINCT(proyecto.ubigeo)
+FROM ogei.fc_mvcs_proyectos_utm proyecto 
+WHERE proyecto.ubigeo 
+	NOT IN (
+		SELECT distrital.id_dist 
+		FROM cartobase.fc_limite_distrital distrital
+	)
+
+/* BÚSQUEDA DE UBIGEO */
+SELECT 
+	distrital.id_dist 
+FROM cartobase.fc_limite_distrital distrital
+WHERE distrital.id_dist = '200700'
+
+------------------------------------------------------
+
+TEST 01
+
+SELECT 
+	SUM(proyecto.conexiones_nuevasssp) AS cant_1 
+FROM ogei.fc_mvcs_proyectos_utm proyecto 
+WHERE 
+	UPPER(proyecto.flag_saneamiento) = UPPER('Saneamiento') AND 
+	UPPER(proyecto.estado) = UPPER('Concluido') AND
+	proyecto.anio_fin_ob >= 2018 AND
+	proyecto.ubigeo IS NOT null
+	
+-------------------------------------------------------
+
+TES 02
