@@ -1,0 +1,4311 @@
+CREATE OR REPLACE PACKAGE PACK_DBA_BDGEO_ROCA_MENA as
+  TYPE REFAPLI IS REF CURSOR;
+  Function ES_NUMBER(str in varchar2) return BOOLEAN;
+
+  PROCEDURE P_LISTAR_ROCASYMENAS(IN_PAGINATAMANO number,
+                                 IN_PAGINANUMERO number,
+                                 IN_CODMUESTRA   varchar2,
+                                 IN_NOMMUESTRA   varchar2,
+                                 IN_REGION       varchar2,
+                                 IN_PROVINCIA    varchar2,
+                                 IN_DISTRITO     varchar2,
+                                 IN_CODINTPROY   varchar2,
+                                 OUT_CURSOR      OUT SYS_REFCURSOR);
+
+  FUNCTION F_TOTAL_ROCASYMENAS(IN_CODMUESTRA varchar2,
+                               IN_NOMMUESTRA varchar2,
+                               IN_REGION     varchar2,
+                               IN_PROVINCIA  varchar2,
+                               IN_DISTRITO   varchar2,
+                               IN_CODINTPROY varchar2) RETURN NUMBER;
+
+  PROCEDURE P_OPE_GDB_ROCASYMENAS(v_opcion      VARCHAR2,
+                                  v_objectid    varchar2,
+                                  v_dir         varchar2,
+                                  v_proy        varchar2,
+                                  v_sub_proy    varchar2,
+                                  v_responsable varchar2,
+                                  v_colectado   varchar2,
+                                  v_estudiado   varchar2,
+                                  v_cd_mtra     varchar2,
+                                  v_f_mtra      varchar2,
+                                  v_norte       varchar2,
+                                  v_este        varchar2,
+                                  v_zona        varchar2,
+                                  v_datum       varchar2,
+                                  v_carta       varchar2,
+                                  v_latitud     varchar2,
+                                  v_longitud    varchar2,
+                                  v_region      varchar2,
+                                  v_provincia   varchar2,
+                                  v_distrito    varchar2,
+                                  v_altitud     varchar2,
+                                  v_a_its       varchar2,
+                                  v_est_mn      varchar2,
+                                  v_cat         varchar2,
+                                  v_otr_cat     varchar2,
+                                  v_geometria   varchar2,
+                                  v_ancho       varchar2,
+                                  v_longt       varchar2,
+                                  v_txtu_r_caja varchar2,
+                                  v_txtu_mnlz   varchar2,
+                                  v_t_roca      varchar2,
+                                  v_st_roca     varchar2,
+                                  v_ctrl_ltg    varchar2,
+                                  v_ctrl_estr   varchar2,
+                                  v_azimut      varchar2,
+                                  v_rumbo       varchar2,
+                                  v_d_rumbo     varchar2,
+                                  v_buzamiento  varchar2,
+                                  v_d_buz       varchar2,
+                                  v_ctrl_cmt    varchar2,
+                                  v_act_prd     varchar2,
+                                  v_act_sc_prd  varchar2,
+                                  v_act_rr_rsv  varchar2,
+                                  v_act_dato    varchar2,
+                                  v_t_mtra      varchar2,
+                                  v_otr_mtra    varchar2,
+                                  v_dscp_mtra   varchar2,
+                                  v_t_mtro      varchar2,
+                                  v_otr_mtro    varchar2,
+                                  v_dscp_mtro   varchar2,
+                                  v_registro    varchar2,
+                                  --v_bibliografia varchar2,
+                                  v_registrado               varchar2,
+                                  v_MinMena                  varchar2,
+                                  v_MinGanga                 varchar2,
+                                  v_TipoDeposito             varchar2,
+                                  v_SubTipoDeposito          varchar2,
+                                  v_TipoMuestra              varchar2,
+                                  v_AnalisisMuestra          varchar2,
+                                  v_MinRoca_rh               varchar2,
+                                  v_Textura                  varchar2,
+                                  v_UnidadLitoestratigrafica varchar2,
+                                  v_Estilo_Alt               varchar2,
+                                  v_Estilo_Min               varchar2,
+                                  V_ANALISIS_MUESTRA_GQ      varchar2,
+                                  V_ANALISIS_MUESTRA_PT      varchar2,
+                                  V_ANALISIS_MUESTRA_OT      varchar2,
+                                  V_ANALISIS_MUESTRA_EE      varchar2,
+                                  
+                                  OUT_ESTADO  OUT NUMBER,
+                                  OUT_MENSAJE OUT VARCHAR2,
+                                  OUT_RETVAL  OUT NUMBER);
+  PROCEDURE P_BUSCAR_ROCASYMENAS(IN_PAGINATAMANO  number,
+                                 IN_PAGINANUMERO  number,
+                                 IN_CODIGOMUESTRA varchar2,
+                                 IN_OBJECTID      varchar2,
+                                 OUT_CURSOR       OUT SYS_REFCURSOR);
+  PROCEDURE P_LISTAR_ANALISIS_RM(IN_OBJECTID      VARCHAR2,
+                                 IN_CODIGOMUESTRA VARCHAR2,
+                                 OUT_CURSOR       OUT SYS_REFCURSOR);
+  PROCEDURE P_OPE_ROCASYMENAS_ANALISIS(IN_OPCION          VARCHAR2,
+                                       IN_OBJECTID        VARCHAR2,
+                                       IN_CODMUESTRA      VARCHAR2,
+                                       IN_TIPO            VARCHAR2,
+                                       IN_ELEMENTO        VARCHAR2,
+                                       IN_UNIDAD          VARCHAR2,
+                                       IN_SIMBOLO         VARCHAR2,
+                                       IN_VALOR           VARCHAR2,
+                                       IN_REGISTROUSUARIO VARCHAR2,
+                                       OUT_ESTADO         OUT NUMBER,
+                                       OUT_MENSAJE        OUT VARCHAR2,
+                                       OUT_RETVAL         OUT NUMBER);
+  PROCEDURE P_OPE_MULTIMEDIA(IN_OPCION        VARCHAR2,
+                             IN_OBJECTID      DATA_EDIT.TB_RM_06_MULTIMEDIA.OBJECTID%TYPE,
+                             IN_CODIGOMUESTRA DATA_EDIT.TB_RM_06_MULTIMEDIA.CD_MTRA%TYPE,
+                             IN_TITULO        DATA_EDIT.TB_RM_06_MULTIMEDIA.TITULO%TYPE,
+                             IN_FECHA         VARCHAR2,
+                             IN_AUTOR         DATA_EDIT.TB_RM_06_MULTIMEDIA.AUTOR%TYPE,
+                             IN_TIPO          DATA_EDIT.TB_RM_06_MULTIMEDIA.TIPO%TYPE,
+                             IN_LINK          DATA_EDIT.TB_RM_06_MULTIMEDIA.LINK%TYPE,
+                             IN_DESCP         DATA_EDIT.TB_RM_06_MULTIMEDIA.DSCP%TYPE,
+                             IN_OBS           DATA_EDIT.TB_RM_06_MULTIMEDIA.OBS%TYPE,
+                             IN_ARCHIVO       DATA_EDIT.TB_RM_06_MULTIMEDIA.ARCHIVO%TYPE,
+                             IN_EXT_ARCH      varchar2,
+                             IN_USERREGISTRO  VARCHAR2,
+                             OUT_ESTADO       OUT NUMBER,
+                             OUT_MENSAJE      OUT VARCHAR2,
+                             OUT_RETVAL       OUT NUMBER);
+
+  PROCEDURE P_LISTAR_MULTIMEDIA(IN_TIPOMULTIMEDIA VARCHAR2,
+                                IN_OBJECTID       DATA_EDIT.TB_RM_06_MULTIMEDIA.OBJECTID%TYPE,
+                                IN_CODIGOMUESTRA  DATA_EDIT.TB_RM_06_MULTIMEDIA.CD_MTRA%TYPE,
+                                OUT_CURSOR        OUT SYS_REFCURSOR);
+  PROCEDURE P_Listar_Alteraciones_RM(IN_OBJECTID      VARCHAR2,
+                                     IN_CODIGOMUESTRA VARCHAR2,
+                                     OUT_CURSOR       OUT SYS_REFCURSOR);
+  PROCEDURE P_SEL_GED_M_LISTA(V_OPCION    IN VARCHAR2,
+                              V_TIPO      IN VARCHAR2,
+                              V_SUBTIPO_1 IN VARCHAR2,
+                              V_SUBTIPO_2 IN VARCHAR2,
+                              OUT_CURSOR  OUT SYS_REFCURSOR);
+  PROCEDURE P_OPE_ALTERACION_RM(IN_OPCION     VARCHAR2,
+                                IN_OBJECTID   VARCHAR2,
+                                IN_CODMUESTRA VARCHAR2,
+                                IN_ALTERACION VARCHAR2,
+                                IN_GRUPO      VARCHAR2,
+                                IN_INTENSIDAD VARCHAR2,
+                                IN_MINERAL    VARCHAR2,
+                                IN_REGISTRADO VARCHAR2,
+                                V_ESTILO_ALT  VARCHAR2,
+                                OUT_ESTADO    OUT NUMBER,
+                                OUT_MENSAJE   OUT VARCHAR2,
+                                OUT_RETVAL    OUT NUMBER);
+
+  FUNCTION F_Nom_Estilo_Alteracion(pCodMuestra VARCHAR2, pObjectID number)
+    RETURN varchar2;
+
+  procedure p_buscar_mineral_roca(in_paginatamano number,
+                                  in_paginanumero number,
+                                  in_codsubtipo   varchar2,
+                                  in_descripcion  varchar2,
+                                  out_cursor      out sys_refcursor);
+  function p_total_buscar_mineral_roca(in_codsubtipo  varchar2,
+                                       in_descripcion varchar2) return number;
+
+  PROCEDURE P_OPE_ESTRUCTURA(IN_OPCION        VARCHAR2,
+                             IN_OBJECTID      VARCHAR2,
+                             IN_CODMUESTRA    VARCHAR2,
+                             IN_REGISTRADO    VARCHAR2,
+                             IN_TIPO          VARCHAR2,
+                             IN_SUBTIPO       VARCHAR2,
+                             IN_AZIMUT        VARCHAR2,
+                             IN_RUMBO         VARCHAR2,
+                             IN_D_RUMBO       VARCHAR2,
+                             IN_BUZAMIENTO    VARCHAR2,
+                             IN_D_BUZAMIENTO  VARCHAR2,
+                             IN_PITCH         VARCHAR2,
+                             IN_DPITCH        VARCHAR2,
+                             IN_PLUNGE        VARCHAR2,
+                             IN_DPLUNGE       VARCHAR2,
+                             IN_OBSESTRUCTURA VARCHAR2,
+                             OUT_ESTADO       OUT NUMBER,
+                             OUT_MENSAJE      OUT VARCHAR2,
+                             OUT_RETVAL       OUT NUMBER);
+
+  PROCEDURE P_Listar_Estructura_RM(IN_OBJECTID      VARCHAR2,
+                                   IN_CODIGOMUESTRA VARCHAR2,
+                                   OUT_CURSOR       OUT SYS_REFCURSOR);
+
+  PROCEDURE P_REPORTE01(OUT_CURSOR OUT SYS_REFCURSOR);
+
+  PROCEDURE P_REP_MODULO_RM_DK(OUT_CURSOR OUT SYS_REFCURSOR);
+  PROCEDURE P_REP_MODULO_RM_WEB(OUT_CURSOR OUT SYS_REFCURSOR);
+
+  PROCEDURE P_VALIDAR_DATA_GEOQUIMICA(V_CD_MTRA   VARCHAR2,
+                                      V_METODO    VARCHAR2,
+                                      OUT_ESTADO  OUT NUMBER,
+                                      OUT_MENSAJE OUT VARCHAR2,
+                                      OUT_RETVAL  OUT NUMBER);
+
+  PROCEDURE P_VALIDAR_DATA_GEOQUIMICA(V_CD_MTRA          VARCHAR2,
+                                      V_COD_INT_PROYECTO VARCHAR2,
+                                      V_METODO           VARCHAR2,
+                                      OUT_ESTADO         OUT NUMBER,
+                                      OUT_MENSAJE        OUT VARCHAR2,
+                                      OUT_RETVAL         OUT NUMBER);
+  FUNCTION F_Cabecera_Excel(pCodMuestra VARCHAR2) RETURN varchar2;
+
+  PROCEDURE P_LISTAR_ROCASYMENAS_TOTAL(IN_CODMUESTRA varchar2,
+                                       IN_NOMMUESTRA varchar2,
+                                       IN_REGION     varchar2,
+                                       IN_PROVINCIA  varchar2,
+                                       IN_DISTRITO   varchar2,
+                                       IN_CODINTPROY varchar2,
+                                       OUT_CURSOR    OUT SYS_REFCURSOR);
+
+  FUNCTION F_SUBTIPO_YACIMIENTO(CodigoMuestra VARCHAR2) RETURN varchar2;
+  FUNCTION F_NOMBRE_CARACT_MINERAL(pCodMuestra VARCHAR2, pTipo number)
+    RETURN varchar2;
+  FUNCTION F_NOMBRE_ST_YACIMIENTO(pCodMuestra VARCHAR2) RETURN varchar2;
+  FUNCTION F_NOMBRE_ANALISIS(pCodMuestra VARCHAR2, pTipo number)
+    RETURN varchar2;
+  FUNCTION F_NOMBRE_ESTRUCTURA(pCodMuestra VARCHAR2) RETURN varchar2;
+  PROCEDURE P_OPE_MIGRAR_DATA_DK(pDir        varchar2,
+                                 pProy       varchar2,
+                                 pSubProy    varchar2,
+                                 pCodIntProy number,
+                                 OUT_MENSAJE OUT VARCHAR2);
+
+  procedure ptabla(OUT_CURSOR OUT SYS_REFCURSOR);
+
+  PROCEDURE P_IMPORT_FOTO(V_TIPO                   VARCHAR2,
+                          V_CODIGO_INTERNO_MUESTRA IN VARCHAR2,
+                          v_codigo_foto            IN VARCHAR2,
+                          v_nombre_archivo         IN VARCHAR2,
+                          v_titulo                 IN VARCHAR2,
+                          v_descripcion            IN VARCHAR2,
+                          v_Correlativo            IN VARCHAR2,
+                          V_BL_FOTO                IN blob,
+                          p_RETORNO                OUT VARCHAR2);
+
+  PROCEDURE P_OPE_DATA_EXCEL(V_OPCION    VARCHAR2,
+                             V_DATO      VARCHAR2,
+                             V_METODO    VARCHAR2,
+                             V_REGISTRO  VARCHAR2,
+                             OUT_ESTADO  OUT NUMBER,
+                             OUT_MENSAJE OUT VARCHAR2,
+                             OUT_RETVAL  OUT NUMBER);
+
+  PROCEDURE P_OPE_DATA_EXCEL(V_OPCION           VARCHAR2,
+                             V_DATO             VARCHAR2,
+                             V_METODO           VARCHAR2,
+                             V_REGISTRO         VARCHAR2,
+                             V_COD_LABORATORIO  VARCHAR2,
+                             V_COD_ESTUDIO_LABO VARCHAR2,
+                             V_COD_SUB_PROY     VARCHAR2,
+                             OUT_ESTADO         OUT NUMBER,
+                             OUT_MENSAJE        OUT VARCHAR2,
+                             OUT_RETVAL         OUT NUMBER);
+  PROCEDURE P_DELETE_TABLA_RM(IN_UNIDAD VARCHAR2, OUT_MENSAJE OUT VARCHAR2);
+  PROCEDURE P_FICHA_REPORTE(IN_CD_MUESTRA VARCHAR2,
+                            OUT_CURSOR    OUT SYS_REFCURSOR);
+  PROCEDURE P_FICHA_CAR_ALTERACION(IN_CD_MUESTRA VARCHAR2,
+                                   OUT_CURSOR    OUT SYS_REFCURSOR);
+  FUNCTION F_ELE_VALOR(IN_CODMUESTRA  VARCHAR2,
+                       IN_ESTUDIO_LAB VARCHAR2,
+                       IN_ELEMENTO    VARCHAR2) RETURN VARCHAR2;
+
+  PROCEDURE P_ELE_VALOR(COD_MUESTRA VARCHAR2,
+                        COD_ESTUDIO VARCHAR2,
+                        OUT_CURSOR  OUT SYS_REFCURSOR);
+
+  FUNCTION F_SIGNO(IN_CODIGO VARCHAR2) RETURN VARCHAR2;
+
+  PROCEDURE P_LISTAR_ANA_LABORATORIO1(IN_COD_MUESTRA VARCHAR2,
+                                      IN_COD_ESTUDIO VARCHAR2,
+                                      OUT_CURSOR     OUT SYS_REFCURSOR);
+
+  PROCEDURE P_CAMBIO_MUESTRA(IN_CODIGO_OLD VARCHAR2,
+                             IN_CODIGO_NEW VARCHAR2,
+                             OUT_ESTADO    OUT NUMBER,
+                             OUT_MENSAJE   OUT VARCHAR2,
+                             OUT_RETVAL    OUT NUMBER);
+  FUNCTION F_ESTUDIOS_LABORATORIO(pCodMuestra VARCHAR2) RETURN varchar2;
+
+  PROCEDURE P_LISTAR_MULTIMEDIA(IN_TIPOMULTIMEDIA VARCHAR2,
+                                IN_OBJECTID       DATA_EDIT.TB_RM_06_MULTIMEDIA.OBJECTID%TYPE,
+                                IN_CODIGOMUESTRA  DATA_EDIT.TB_RM_06_MULTIMEDIA.CD_MTRA%TYPE,
+                                IN_SUBPROYECTO    VARCHAR2,
+                                OUT_CURSOR        OUT SYS_REFCURSOR);
+  FUNCTION F_ELE_VALOR(IN_CODMUESTRA  VARCHAR2,
+                       IN_ESTUDIO_LAB VARCHAR2,
+                       IN_ELEMENTO    VARCHAR2,
+                       IN_SUBPROYECTO VARCHAR2) RETURN VARCHAR2;
+  PROCEDURE P_LISTAR_ANA_LABORATORIO(IN_COD_MUESTRA VARCHAR2,
+                                     IN_COD_ESTUDIO VARCHAR2,
+                                     IN_SUBPROYECTO VARCHAR2,
+                                     OUT_CURSOR     OUT SYS_REFCURSOR);
+  PROCEDURE P_LISTAR_ANALISIS_RM(IN_OBJECTID      VARCHAR2,
+                                 IN_CODIGOMUESTRA VARCHAR2,
+                                 IN_SUBPROY       VARCHAR2,
+                                 OUT_CURSOR       OUT SYS_REFCURSOR);
+  FUNCTION F_ESTUDIOS_LABORATORIO(PCODMUESTRA  VARCHAR2,
+                                  PSUBPROYECTO VARCHAR2) RETURN VARCHAR2;
+
+END PACK_DBA_BDGEO_ROCA_MENA;
+/
+CREATE OR REPLACE PACKAGE BODY PACK_DBA_BDGEO_ROCA_MENA IS
+  -- ************************************************
+  -- Modulo:BDGeocientifica  
+
+  -- ************************************************
+
+  Function ES_NUMBER(str in varchar2) return BOOLEAN IS
+    N number;
+  begin
+    N := TO_NUMBER(str);
+    return(TRUE);
+  Exception
+    WHEN OTHERS then
+      return(FALSE);
+  end;
+
+  PROCEDURE P_LISTAR_ROCASYMENAS(IN_PAGINATAMANO number,
+                                 IN_PAGINANUMERO number,
+                                 IN_CODMUESTRA   varchar2,
+                                 IN_NOMMUESTRA   varchar2,
+                                 IN_REGION       varchar2,
+                                 IN_PROVINCIA    varchar2,
+                                 IN_DISTRITO     varchar2,
+                                 IN_CODINTPROY   varchar2,
+                                 OUT_CURSOR      OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    V_ERROR := NULL;
+    OPEN OUT_CURSOR FOR
+      SELECT *
+        FROM (SELECT ROW_NUMBER() OVER(ORDER BY RM.OBJECTID) RN,
+                     RM.OBJECTID,
+                     '' CD_DIR,
+                     RM.PROY,
+                     PACK_DBA_BDGEO_UTILS.F_SEL_DOMINIOS_DETALLE('DC_MODULO04',
+                                                                 RM.PROY) PROYECTO,
+                     RM.SUB_PROY CD_SUBPROY,
+                     PACK_DBA_BDGEO_UTILS.F_SEL_DOMINIOS_DETALLE('DC_MODULOETAPA04',
+                                                                 RM.SUB_PROY) SUB_PROY,
+                     (SELECT INITCAP(NOMBRES_Y_APELLIDOS)
+                        FROM BDT_M_INTEGRANTE
+                       WHERE USUARIO = RM.COLECTADO
+                         AND ROWNUM = 1) COLECTADO,
+                     RM.CD_MTRA CD_MTRA,
+                     RM.A_ITS AREA_INTERES,
+                     TO_CHAR(RM.F_MTRA, 'DD/MM/YYYY') F_MTRA,
+                     TO_CHAR(RM.NORTE, '9999999.99') NORTE,
+                     TO_CHAR(RM.ESTE, '999999.99') ESTE,
+                     RM.ZONA,
+                     RM.DATUM,
+                     RM.LATITUD,
+                     RM.LONGITUD,
+                     RM.ALTITUD,
+                     INITCAP(B.NM_DEPA) REGION,
+                     INITCAP(B.NM_PROV) PROVINCIA,
+                     INITCAP(B.NM_DIST) DISTRITO,
+                     (SELECT DECODE(COUNT(*), 0, 'No Existe', 'Existe')
+                        FROM DATA_EDIT.TB_RM_05_LABORATORIO L
+                       WHERE L.CD_MTRA = RM.CD_MTRA) ||
+                     DECODE(RM.REGISTRO, 'Publicable', ' (Publicado)', '') RES_LABORATORIO
+              
+              ---                       || ' (' || decode(RM.REGISTRO,'Publicable','P') || ')' RES_LABORATORIO
+              
+                FROM DATA_EDIT.GPT_RM_ROCA_MENA RM --EVW
+               INNER JOIN DATA_GIS.GPO_DEP_DISTRITO B
+                  ON RM.DISTRITO = B.CD_DIST(+)
+               WHERE (IN_CODMUESTRA IS NULL OR
+                     UPPER(RM.CD_MTRA) LIKE UPPER(IN_CODMUESTRA) || '%')
+                 AND (IN_NOMMUESTRA IS NULL OR
+                     UPPER(RM.A_ITS) LIKE
+                     '%' || UPPER(IN_NOMMUESTRA) || '%')
+                 AND (IN_REGION IS NULL OR
+                     UPPER(B.NM_DEPA) LIKE UPPER(IN_REGION) || '%')
+                 AND (IN_PROVINCIA IS NULL OR
+                     UPPER(B.NM_PROV) LIKE UPPER(IN_PROVINCIA) || '%')
+                 AND (IN_DISTRITO IS NULL OR
+                     UPPER(B.NM_DIST) LIKE UPPER(IN_DISTRITO) || '%')
+                 AND PROY =
+                     (SELECT CODIGO_PROYECTO
+                        FROM BDT_M_PROYECTO
+                       WHERE CODIGO_INTERNO_PROYECTO = IN_CODINTPROY)
+                 and rm.registro <> 'Historico')
+       WHERE rn BETWEEN IN_PAGINANUMERO + 1 AND
+             IN_PAGINANUMERO + IN_PAGINATAMANO;
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_LISTAR_ROCASYMENAS;
+
+  -- *************************************************************************************
+  -- Modulo:BDGeocientifica  
+
+  -- ***************************************************************************************
+  FUNCTION F_TOTAL_ROCASYMENAS(IN_CODMUESTRA VARCHAR2,
+                               IN_NOMMUESTRA VARCHAR2,
+                               IN_REGION     VARCHAR2,
+                               IN_PROVINCIA  VARCHAR2,
+                               IN_DISTRITO   VARCHAR2,
+                               IN_CODINTPROY VARCHAR2) RETURN NUMBER IS
+    TOTALROWS NUMBER;
+  BEGIN
+    TOTALROWS := 0;
+    SELECT COUNT(1)
+      INTO TOTALROWS
+    
+      FROM DATA_EDIT.GPT_RM_ROCA_MENA RM
+     INNER JOIN DATA_GIS.GPO_DEP_DISTRITO B
+        ON RM.DISTRITO = B.CD_DIST(+)
+     WHERE (IN_CODMUESTRA IS NULL OR
+           UPPER(RM.CD_MTRA) LIKE '%' || UPPER(IN_CODMUESTRA) || '%')
+       AND (IN_NOMMUESTRA IS NULL OR
+           UPPER(RM.A_ITS) LIKE '%' || UPPER(IN_NOMMUESTRA) || '%')
+       AND (IN_REGION IS NULL OR
+           UPPER(B.NM_DEPA) LIKE UPPER(IN_REGION) || '%')
+       AND (IN_PROVINCIA IS NULL OR
+           UPPER(B.NM_PROV) LIKE UPPER(IN_PROVINCIA) || '%')
+       AND (IN_DISTRITO IS NULL OR
+           UPPER(B.NM_DIST) LIKE UPPER(IN_DISTRITO) || '%')
+       AND PROY = (SELECT CODIGO_PROYECTO
+                     FROM BDT_M_PROYECTO
+                    WHERE CODIGO_INTERNO_PROYECTO = IN_CODINTPROY);
+  
+    RETURN TOTALROWS;
+  END F_TOTAL_ROCASYMENAS;
+
+  PROCEDURE P_OPE_GDB_ROCASYMENAS(V_OPCION                   VARCHAR2,
+                                  V_OBJECTID                 VARCHAR2,
+                                  V_DIR                      VARCHAR2,
+                                  V_PROY                     VARCHAR2,
+                                  V_SUB_PROY                 VARCHAR2,
+                                  V_RESPONSABLE              VARCHAR2,
+                                  V_COLECTADO                VARCHAR2,
+                                  V_ESTUDIADO                VARCHAR2,
+                                  V_CD_MTRA                  VARCHAR2,
+                                  V_F_MTRA                   VARCHAR2,
+                                  V_NORTE                    VARCHAR2,
+                                  V_ESTE                     VARCHAR2,
+                                  V_ZONA                     VARCHAR2,
+                                  V_DATUM                    VARCHAR2,
+                                  V_CARTA                    VARCHAR2,
+                                  V_LATITUD                  VARCHAR2,
+                                  V_LONGITUD                 VARCHAR2,
+                                  V_REGION                   VARCHAR2,
+                                  V_PROVINCIA                VARCHAR2,
+                                  V_DISTRITO                 VARCHAR2,
+                                  V_ALTITUD                  VARCHAR2,
+                                  V_A_ITS                    VARCHAR2,
+                                  V_EST_MN                   VARCHAR2,
+                                  V_CAT                      VARCHAR2,
+                                  V_OTR_CAT                  VARCHAR2,
+                                  V_GEOMETRIA                VARCHAR2,
+                                  V_ANCHO                    VARCHAR2,
+                                  V_LONGT                    VARCHAR2,
+                                  V_TXTU_R_CAJA              VARCHAR2,
+                                  V_TXTU_MNLZ                VARCHAR2,
+                                  V_T_ROCA                   VARCHAR2,
+                                  V_ST_ROCA                  VARCHAR2,
+                                  V_CTRL_LTG                 VARCHAR2,
+                                  V_CTRL_ESTR                VARCHAR2,
+                                  V_AZIMUT                   VARCHAR2,
+                                  V_RUMBO                    VARCHAR2,
+                                  V_D_RUMBO                  VARCHAR2,
+                                  V_BUZAMIENTO               VARCHAR2,
+                                  V_D_BUZ                    VARCHAR2,
+                                  V_CTRL_CMT                 VARCHAR2,
+                                  V_ACT_PRD                  VARCHAR2, --PRODUCCION
+                                  V_ACT_SC_PRD               VARCHAR2, --ESCALA PRODUCCIÓN
+                                  V_ACT_RR_RSV               VARCHAR2, --RECURSOS & RESERVA 
+                                  V_ACT_DATO                 VARCHAR2, --DATOS EMPRESA 
+                                  V_T_MTRA                   VARCHAR2,
+                                  V_OTR_MTRA                 VARCHAR2,
+                                  V_DSCP_MTRA                VARCHAR2,
+                                  V_T_MTRO                   VARCHAR2,
+                                  V_OTR_MTRO                 VARCHAR2,
+                                  V_DSCP_MTRO                VARCHAR2,
+                                  V_REGISTRO                 VARCHAR2,
+                                  V_REGISTRADO               VARCHAR2,
+                                  V_MINMENA                  VARCHAR2,
+                                  V_MINGANGA                 VARCHAR2,
+                                  V_TIPODEPOSITO             VARCHAR2,
+                                  V_SUBTIPODEPOSITO          VARCHAR2,
+                                  V_TIPOMUESTRA              VARCHAR2,
+                                  V_ANALISISMUESTRA          VARCHAR2,
+                                  V_MINROCA_RH               VARCHAR2,
+                                  V_TEXTURA                  VARCHAR2,
+                                  V_UNIDADLITOESTRATIGRAFICA VARCHAR2,
+                                  V_ESTILO_ALT               VARCHAR2,
+                                  V_ESTILO_MIN               VARCHAR2,
+                                  V_ANALISIS_MUESTRA_GQ      VARCHAR2,
+                                  V_ANALISIS_MUESTRA_PT      VARCHAR2,
+                                  V_ANALISIS_MUESTRA_OT      VARCHAR2,
+                                  V_ANALISIS_MUESTRA_EE      VARCHAR2,
+                                  
+                                  OUT_ESTADO  OUT NUMBER,
+                                  OUT_MENSAJE OUT VARCHAR2,
+                                  OUT_RETVAL  OUT NUMBER) IS
+    V_VA_TXT_TipoMuestra     CLOB;
+    V_VA_TipoMuestra         VARCHAR2(255);
+    V_NU_POS_TipoMuestra     NUMBER(4);
+    V_NU_POS_CAD_tipoMuestra NUMBER(4);
+  
+    V_VA_TXT_AnalisisMuestra     CLOB;
+    V_VA_AnalisisMuestra         VARCHAR2(255);
+    V_NU_POS_AnalisisMuestra     NUMBER(4);
+    V_NU_POS_CAD_AnalisisMuestra NUMBER(4);
+  
+    V_VA_TXT_SubTipoDeposito     CLOB;
+    V_VA_SubTipoDeposito         VARCHAR2(255);
+    V_NU_POS_SubTipoDeposito     NUMBER(4);
+    V_NU_POS_CAD_SubTipoDeposito NUMBER(4);
+  
+    v_ExisteCodMuestra number(2);
+    pOID               number(5);
+    pOID_MenaGanga     number(5);
+    pNUOrden           number(5);
+    pOIDDeposito       number(5);
+    pOIDAnalisis       number(5);
+    v_tipo_deposito    number(2);
+  
+    --    V_ERROR            number(5);
+  BEGIN
+    OUT_ESTADO  := 0;
+    OUT_MENSAJE := NULL;
+    OUT_RETVAL  := 0;
+  
+    IF V_OPCION = 'INS' THEN
+      SELECT COUNT(1)
+        INTO v_ExisteCodMuestra
+        FROM DATA_EDIT.GPT_RM_ROCA_MENA
+       WHERE UPPER(cd_mtra) = UPPER(v_cd_mtra)
+         AND PROY = V_PROY;
+    
+      IF v_ExisteCodMuestra = 0 THEN
+        SELECT NVL(MAX(objectid) + 1, 1)
+          INTO pOID
+          FROM DATA_EDIT.GPT_RM_ROCA_MENA;
+      
+        insert into DATA_EDIT.GPT_RM_ROCA_MENA
+          (OBJECTID,
+           GLOBALID,
+           PROY,
+           SUB_PROY,
+           CD_MTRA,
+           F_MTRA,
+           COLECTADO,
+           CAT,
+           OTR_CAT,
+           EST_MIN,
+           A_ITS,
+           LATITUD,
+           LONGITUD,
+           ESTE,
+           NORTE,
+           DATUM,
+           ZONA,
+           ALTITUD,
+           REGION,
+           PROVINCIA,
+           DISTRITO,
+           HOJA,
+           T_YACIMIENTO,
+           ST_YACIMIENTO,
+           OC_LABO,
+           CREATIONDATE,
+           CREATOR,
+           REGISTRO,
+           SHAPE)
+        VALUES
+          (POID,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           V_PROY,
+           V_SUB_PROY,
+           V_CD_MTRA,
+           TO_DATE(V_F_MTRA, 'DD/MM/YYYY'),
+           V_COLECTADO,
+           V_CAT,
+           V_OTR_CAT,
+           V_EST_MN,
+           V_A_ITS,
+           DECODE(V_LATITUD,
+                  NULL,
+                  NULL,
+                  TO_NUMBER(REPLACE(V_LATITUD, '.', ','))),
+           DECODE(V_LONGITUD,
+                  NULL,
+                  NULL,
+                  TO_NUMBER(REPLACE(V_LONGITUD, '.', ','))),
+           DECODE(V_ESTE, NULL, NULL, TO_NUMBER(REPLACE(V_ESTE, '.', ','))),
+           DECODE(V_NORTE,
+                  NULL,
+                  NULL,
+                  TO_NUMBER(REPLACE(V_NORTE, '.', ','))),
+           V_DATUM,
+           V_ZONA,
+           V_ALTITUD,
+           V_REGION,
+           V_PROVINCIA,
+           V_DISTRITO,
+           V_CARTA,
+           V_TIPODEPOSITO,
+           V_SUBTIPODEPOSITO,
+           '',
+           SYSDATE,
+           V_REGISTRADO,
+           V_REGISTRO,
+           sde.st_point('point (' || replace(pack_dba_gis.F_UTM_GEO_WGS84(DECODE(V_ESTE,
+                                                                                 NULL,
+                                                                                 NULL,
+                                                                                 TO_NUMBER(REPLACE(V_ESTE,
+                                                                                                   '.',
+                                                                                                   ','))),
+                                                                          DECODE(V_NORTE,
+                                                                                 NULL,
+                                                                                 NULL,
+                                                                                 TO_NUMBER(REPLACE(V_NORTE,
+                                                                                                   '.',
+                                                                                                   ','))),
+                                                                          substr(v_zona,
+                                                                                 1,
+                                                                                 2),
+                                                                          4326,
+                                                                          'minx'),
+                                             ',',
+                                             '.') || ' ' ||
+                        replace(pack_dba_gis.F_UTM_GEO_WGS84(DECODE(V_ESTE,
+                                                                    NULL,
+                                                                    NULL,
+                                                                    TO_NUMBER(REPLACE(V_ESTE,
+                                                                                      '.',
+                                                                                      ','))),
+                                                             DECODE(V_NORTE,
+                                                                    NULL,
+                                                                    NULL,
+                                                                    TO_NUMBER(REPLACE(V_NORTE,
+                                                                                      '.',
+                                                                                      ','))),
+                                                             substr(v_zona,
+                                                                    1,
+                                                                    2),
+                                                             4326,
+                                                             'miny'),
+                                ',',
+                                '.') || ')',
+                        4326)
+           
+           );
+      
+        OUT_ESTADO := 1;
+        OUT_RETVAL := pOID;
+      else
+        OUT_ESTADO  := 0;
+        OUT_MENSAJE := 'El Código de muestra ingresado existe';
+      end if;
+    elsif v_opcion = 'UPD' then
+      update DATA_EDIT.GPT_RM_ROCA_MENA
+         SET PROY          = V_PROY,
+             SUB_PROY      = V_SUB_PROY,
+             CD_MTRA       = V_CD_MTRA,
+             F_MTRA        = TO_DATE(V_F_MTRA, 'DD/MM/YYYY'),
+             COLECTADO     = V_COLECTADO,
+             CAT           = V_CAT,
+             OTR_CAT       = V_OTR_CAT,
+             EST_MIN       = V_EST_MN,
+             A_ITS         = V_A_ITS,
+             LATITUD       = DECODE(V_LATITUD,
+                                    NULL,
+                                    NULL,
+                                    TO_NUMBER(REPLACE(V_LATITUD, '.', ','))),
+             LONGITUD      = DECODE(V_LONGITUD,
+                                    NULL,
+                                    NULL,
+                                    TO_NUMBER(REPLACE(V_LONGITUD, '.', ','))),
+             ESTE          = DECODE(V_ESTE,
+                                    NULL,
+                                    NULL,
+                                    TO_NUMBER(REPLACE(V_ESTE, '.', ','))),
+             NORTE         = DECODE(V_NORTE,
+                                    NULL,
+                                    NULL,
+                                    TO_NUMBER(REPLACE(V_NORTE, '.', ','))),
+             DATUM         = V_DATUM,
+             ZONA          = V_ZONA,
+             ALTITUD       = V_ALTITUD,
+             REGION        = V_REGION,
+             PROVINCIA     = V_PROVINCIA,
+             DISTRITO      = V_DISTRITO,
+             HOJA          = V_CARTA,
+             T_YACIMIENTO  = V_TIPODEPOSITO,
+             ST_YACIMIENTO = V_SUBTIPODEPOSITO,
+             OC_LABO       = '',
+             EDITDATE      = sysdate,
+             EDITOR        = V_REGISTRADO,
+             REGISTRO      = V_REGISTRO,
+             SHAPE         = sde.st_point('point (' ||
+                                          replace(pack_dba_gis.F_UTM_GEO_WGS84(DECODE(V_ESTE,
+                                                                                      NULL,
+                                                                                      NULL,
+                                                                                      TO_NUMBER(REPLACE(V_ESTE,
+                                                                                                        '.',
+                                                                                                        ','))),
+                                                                               DECODE(V_NORTE,
+                                                                                      NULL,
+                                                                                      NULL,
+                                                                                      TO_NUMBER(REPLACE(V_NORTE,
+                                                                                                        '.',
+                                                                                                        ','))),
+                                                                               substr(v_zona,
+                                                                                      1,
+                                                                                      2),
+                                                                               4326,
+                                                                               'minx'),
+                                                  ',',
+                                                  '.') || ' ' ||
+                                          replace(pack_dba_gis.F_UTM_GEO_WGS84(DECODE(V_ESTE,
+                                                                                      NULL,
+                                                                                      NULL,
+                                                                                      TO_NUMBER(REPLACE(V_ESTE,
+                                                                                                        '.',
+                                                                                                        ','))),
+                                                                               DECODE(V_NORTE,
+                                                                                      NULL,
+                                                                                      NULL,
+                                                                                      TO_NUMBER(REPLACE(V_NORTE,
+                                                                                                        '.',
+                                                                                                        ','))),
+                                                                               substr(v_zona,
+                                                                                      1,
+                                                                                      2),
+                                                                               4326,
+                                                                               'miny'),
+                                                  ',',
+                                                  '.') || ')',
+                                          4326)
+       where objectid = v_ObjectID;
+      --------------------------------------------
+      ---LITOLOGIA-------
+      --------------------------------------------
+      SELECT COUNT(1)
+        INTO v_ExisteCodMuestra
+        FROM DATA_EDIT.TB_RM_01_LITOLOGIA
+       WHERE UPPER(cd_mtra) = UPPER(v_cd_mtra);
+    
+      IF v_ExisteCodMuestra = 0 THEN
+        SELECT NVL(MAX(objectid) + 1, 1)
+          INTO pOID
+          FROM DATA_EDIT.TB_RM_01_LITOLOGIA;
+      
+        INSERT INTO DATA_EDIT.TB_RM_01_LITOLOGIA
+          (OBJECTID,
+           GLOBALID,
+           CD_MTRA,
+           T_ROCA,
+           ST_ROCA,
+           ROCA_MINERAL,
+           GEOMETRIA,
+           TEXTURA,
+           U_LITOESTRAT,
+           DEPOSITO,
+           ST_DEPOSITO,
+           MENA,
+           GANGA,
+           PARENTGLOBALID,
+           CREATIONDATE,
+           CREATOR)
+        VALUES
+          (pOID,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           V_CD_MTRA,
+           V_T_ROCA,
+           V_ST_ROCA,
+           V_MINROCA_RH,
+           V_GEOMETRIA,
+           V_TEXTURA,
+           V_UNIDADLITOESTRATIGRAFICA,
+           V_TIPODEPOSITO,
+           V_SUBTIPODEPOSITO,
+           V_MINMENA,
+           V_MINGANGA,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           SYSDATE,
+           V_REGISTRADO);
+      ELSE
+        UPDATE DATA_EDIT.TB_RM_01_LITOLOGIA
+           SET T_ROCA       = V_T_ROCA,
+               ST_ROCA      = V_ST_ROCA,
+               ROCA_MINERAL = V_MINROCA_RH,
+               GEOMETRIA    = V_GEOMETRIA,
+               TEXTURA      = V_TEXTURA,
+               U_LITOESTRAT = V_UNIDADLITOESTRATIGRAFICA,
+               DEPOSITO     = V_TIPODEPOSITO,
+               ST_DEPOSITO  = V_SUBTIPODEPOSITO,
+               MENA         = V_MINMENA,
+               GANGA        = V_MINGANGA,
+               --PARENTGLOBALID = SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+               EDITDATE = SYSDATE,
+               EDITOR   = V_REGISTRADO
+         WHERE CD_MTRA = V_CD_MTRA;
+      
+      END IF;
+    
+      ------------------------------------------    
+      ------------Mineralización----------------
+      --------------------------------------------
+      SELECT COUNT(1)
+        INTO v_ExisteCodMuestra
+        FROM DATA_EDIT.TB_RM_02_MINERALIZACION
+       WHERE UPPER(cd_mtra) = UPPER(v_cd_mtra);
+    
+      IF v_ExisteCodMuestra = 0 THEN
+        SELECT NVL(MAX(objectid) + 1, 1)
+          INTO pOID
+          FROM DATA_EDIT.TB_RM_02_MINERALIZACION;
+      
+        INSERT INTO DATA_EDIT.TB_RM_02_MINERALIZACION
+          (OBJECTID,
+           GLOBALID,
+           CD_MTRA,
+           CONTENIDO_MIN,
+           MINMENA,
+           MINGANGA,
+           ESTILO_MIN,
+           PARENTGLOBALID,
+           CREATIONDATE,
+           CREATOR)
+        VALUES
+          (POID,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           V_CD_MTRA,
+           V_TXTU_R_CAJA,
+           V_TXTU_MNLZ,
+           '',
+           V_ESTILO_MIN,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           SYSDATE,
+           V_REGISTRADO);
+      ELSE
+        UPDATE DATA_EDIT.TB_RM_02_MINERALIZACION
+           SET CONTENIDO_MIN = V_TXTU_R_CAJA,
+               MINMENA       = V_TXTU_MNLZ,
+               MINGANGA      = '',
+               ESTILO_MIN    = V_ESTILO_MIN,
+               EDITDATE      = SYSDATE,
+               EDITOR        = V_REGISTRADO
+         WHERE CD_MTRA = V_CD_MTRA;
+      
+      END IF;
+    
+      ------------------------------------------
+      -----------ACTIVIDAD MINERA---------------      
+      ------------------------------------------    
+      SELECT COUNT(1)
+        INTO v_ExisteCodMuestra
+        FROM DATA_EDIT.TB_RM_03_ACTMINERA
+       WHERE UPPER(cd_mtra) = UPPER(v_cd_mtra);
+    
+      IF v_ExisteCodMuestra = 0 THEN
+        SELECT NVL(MAX(objectid) + 1, 1)
+          INTO pOID
+          FROM DATA_EDIT.TB_RM_03_ACTMINERA;
+      
+        INSERT INTO DATA_EDIT.TB_RM_03_ACTMINERA
+          (OBJECTID,
+           GLOBALID,
+           CD_MTRA,
+           ACT_PRD,
+           ACT_SC_PRD,
+           ACT_RR_RSV,
+           ACT_DATO,
+           PARENTGLOBALID,
+           CREATIONDATE,
+           CREATOR)
+        VALUES
+          (pOID,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           V_CD_MTRA,
+           V_ACT_PRD,
+           V_ACT_SC_PRD,
+           V_ACT_RR_RSV,
+           V_ACT_DATO,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           SYSDATE,
+           V_REGISTRADO);
+      ELSE
+        UPDATE DATA_EDIT.TB_RM_03_ACTMINERA
+           SET ACT_PRD    = V_ACT_PRD,
+               ACT_SC_PRD = V_ACT_SC_PRD,
+               ACT_RR_RSV = V_ACT_RR_RSV,
+               ACT_DATO   = V_ACT_DATO,
+               EDITDATE   = SYSDATE,
+               EDITOR     = V_REGISTRADO
+         WHERE CD_MTRA = V_CD_MTRA;
+      END IF;
+    
+      ------------------------------------------
+      -----------TIPO DE MUESTRA---------------      
+      ------------------------------------------    
+      SELECT COUNT(1)
+        INTO v_ExisteCodMuestra
+        FROM DATA_EDIT.TB_RM_04_TIPOMUESTRA
+       WHERE UPPER(cd_mtra) = UPPER(v_cd_mtra);
+    
+      IF v_ExisteCodMuestra = 0 THEN
+        SELECT NVL(MAX(objectid) + 1, 1)
+          INTO pOID
+          FROM DATA_EDIT.TB_RM_04_TIPOMUESTRA;
+      
+        INSERT INTO DATA_EDIT.TB_RM_04_TIPOMUESTRA
+          (OBJECTID,
+           GLOBALID,
+           CD_MTRA,
+           T_MTRA,
+           OTR_MTRA,
+           DSCP_MTRA,
+           T_MTRO,
+           OTR_MTRO,
+           DSCP_MTRO,
+           ANA_GEOQ,
+           ANA_PETRO,
+           ANA_OTROS,
+           ANA_EESP,
+           PARENTGLOBALID,
+           CREATIONDATE,
+           CREATOR)
+        VALUES
+          (POID,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           V_CD_MTRA,
+           V_T_MTRA,
+           V_OTR_MTRA,
+           V_DSCP_MTRA,
+           V_T_MTRO,
+           V_OTR_MTRO,
+           V_DSCP_MTRO,
+           V_ANALISIS_MUESTRA_GQ,
+           V_ANALISIS_MUESTRA_PT,
+           V_ANALISIS_MUESTRA_OT,
+           V_ANALISIS_MUESTRA_EE,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID,
+           SYSDATE,
+           V_REGISTRADO);
+      
+      ELSE
+        UPDATE DATA_EDIT.TB_RM_04_TIPOMUESTRA
+           SET CD_MTRA   = V_CD_MTRA,
+               T_MTRA    = V_T_MTRA,
+               OTR_MTRA  = V_OTR_MTRA,
+               DSCP_MTRA = V_DSCP_MTRA,
+               T_MTRO    = V_T_MTRO,
+               OTR_MTRO  = V_OTR_MTRO,
+               DSCP_MTRO = V_DSCP_MTRO,
+               ANA_GEOQ  = V_ANALISIS_MUESTRA_GQ,
+               ANA_PETRO = V_ANALISIS_MUESTRA_PT,
+               ANA_OTROS = V_ANALISIS_MUESTRA_OT,
+               ANA_EESP  = V_ANALISIS_MUESTRA_EE,
+               EDITDATE  = SYSDATE,
+               EDITOR    = V_REGISTRADO
+         WHERE CD_MTRA = V_CD_MTRA;
+      END IF;
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := v_ObjectID;
+    end if;
+    ------------------------------------------    
+    ------------------------------------------
+    SELECT DECODE(V_OBJECTID, 0, POID, V_OBJECTID) INTO POID FROM DUAL;
+    insert into x values (POID, v_objectid, sysdate);
+    commit;
+    BEGIN
+      PKG_METADATO.P_ENVIA_CORREO_WEB_RM(POID);
+    END;
+  
+    COMMIT;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      --V_ERROR := SQLCODE || ' ' || SQLERRM;
+      --RAISE_APPLICATION_ERROR(-20000, SQLERRM);
+      OUT_ESTADO  := 2;
+      OUT_MENSAJE := SQLERRM;
+      ROLLBACK;
+    
+  END P_OPE_GDB_ROCASYMENAS;
+
+  PROCEDURE P_BUSCAR_ROCASYMENAS(IN_PAGINATAMANO  number,
+                                 IN_PAGINANUMERO  number,
+                                 IN_CODIGOMUESTRA varchar2,
+                                 IN_OBJECTID      varchar2,
+                                 OUT_CURSOR       OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    V_ERROR := NULL;
+    OPEN OUT_CURSOR FOR
+      SELECT *
+        FROM (SELECT ROW_NUMBER() OVER(ORDER BY a.objectid) rn,
+                     A.OBJECTID,
+                     A.REGISTRO ESTADOREGISTRO,
+                     '' DIR, -- A.DIR,
+                     A.PROY,
+                     A.SUB_PROY,
+                     '' RESPONSABLE, --A.RESPONSABLE,
+                     A.COLECTADO COLECTADO,
+                     '' ESTUDIADO, --A.ESTUDIADO ESTUDIADO,
+                     A.CD_MTRA CODMUESTRA,
+                     TO_CHAR(A.F_MTRA, 'DD/MM/YYYY') FECHAMUESTRA,
+                     NORTE,
+                     ESTE,
+                     A.ZONA,
+                     A.DATUM,
+                     A.HOJA,
+                     A.LATITUD,
+                     A.LONGITUD,
+                     A.ALTITUD,
+                     A.REGION COD_DEPA,
+                     A.PROVINCIA COD_PROV,
+                     A.DISTRITO COD_DIST,
+                     INITCAP(B.NM_DEPA) REGION,
+                     INITCAP(B.NM_PROV) PROVINCIA,
+                     INITCAP(B.NM_DIST) DISTRITO,
+                     A.A_ITS AREAINTERES,
+                     A.CAT CATEGORIAMINA,
+                     A.OTR_CAT OTRACATEGORIA,
+                     A.EST_MIN ESTADOMINA,
+                     -------------------------------------------------------
+                     -------------------------------------------------------
+                     
+                     L.T_ROCA T_ROCA,
+                     L.ST_ROCA ST_ROCA,
+                     L.ROCA_MINERAL MINROCARH_COD,
+                     (SELECT DESCRIPCION
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_RH_ROCA'
+                         AND CODIGO = L.ROCA_MINERAL) MINROCARH_NOM,
+                     L.GEOMETRIA GEOMETRIA,
+                     L.TEXTURA TEXTURA,
+                     L.U_LITOESTRAT UNIDADLITOESTRATIGRAFICA,
+                     
+                     L.MENA        MINMENA,
+                     L.GANGA       MINGANGA,
+                     L.DEPOSITO    TIPODEPOSITO,
+                     L.ST_DEPOSITO SUBTIPODEPOSITO,
+                     
+                     M.CONTENIDO_MIN TXTU_R_CAJA,
+                     M.MINMENA       TXTU_MNLZ,
+                     M.ESTILO_MIN    ESTILO_MIN,
+                     AM.ACT_PRD,
+                     AM.ACT_SC_PRD,
+                     AM.ACT_RR_RSV,
+                     AM.ACT_DATO,
+                     TP.T_MTRA,
+                     TP.OTR_MTRA,
+                     TP.DSCP_MTRA,
+                     TP.T_MTRO,
+                     TP.OTR_MTRO,
+                     TP.DSCP_MTRO,
+                     TP.ANA_GEOQ     ANALISISMUESTRAGQ,
+                     TP.ANA_PETRO    ANALISISMUESTRAPT,
+                     TP.ANA_OTROS    ANALISISMUESTRAOT,
+                     TP.ANA_EESP     ANALISISMUESTRAEE,
+                     -------------------------------------------------------
+                     -------------------------------------------------------
+                     '' ancho, --ancho,
+                     '' LONGT, --LONGT,
+                     '' ctrl_ltg, --ctrl_ltg,
+                     '' ctrl_estr, --ctrl_estr,
+                     '' ctrl_cmt, --a.ctrl_cmt,
+                     '' Azimut, --a.azimut Azimut,
+                     '' Rumbo, --a.rumbo Rumbo,
+                     '' DirRumbo, --a.d_rumbo DirRumbo,
+                     '' Buzamiento, --a.buzamiento Buzamiento,
+                     '' dirBuzamiento, --a.d_buz dirBuzamiento,
+                     '' ESTILO_ALT
+              
+                FROM DATA_EDIT.GPT_RM_ROCA_MENA A
+                LEFT JOIN DATA_GIS.GPO_DEP_DISTRITO B
+                  ON A.DISTRITO = B.CD_DIST
+                LEFT JOIN DATA_EDIT.TB_RM_01_LITOLOGIA L
+                  ON L.CD_MTRA = A.CD_MTRA
+                LEFT JOIN DATA_EDIT.TB_RM_02_MINERALIZACION M
+                  ON M.CD_MTRA = A.CD_MTRA
+                LEFT JOIN DATA_EDIT.TB_RM_03_ACTMINERA AM
+                  ON AM.CD_MTRA = A.CD_MTRA
+                LEFT JOIN DATA_EDIT.TB_RM_04_TIPOMUESTRA TP
+                  ON TP.CD_MTRA = A.CD_MTRA
+              
+               WHERE UPPER(a.cd_mtra) LIKE UPPER(IN_CODIGOMUESTRA) || '%'
+                 AND (IN_OBJECTID IS NULL OR a.objectid = IN_OBJECTID))
+      
+       WHERE rn BETWEEN IN_PAGINANUMERO + 1 AND
+             IN_PAGINANUMERO + IN_PAGINATAMANO;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_BUSCAR_ROCASYMENAS;
+
+  PROCEDURE P_LISTAR_ANALISIS_RM(IN_OBJECTID      VARCHAR2,
+                                 IN_CODIGOMUESTRA VARCHAR2,
+                                 OUT_CURSOR       OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      select R.objectid,
+             r.cd_mtra,
+             R.TIPO COD_TIPO,
+             (select descripcion
+                from ged_m_lista
+               where tipo = '04_DC_ST_PM06'
+                 and detalle = 'BDGEO_WEB_DOMINIOS'
+                 and codigo = r.tipo) tipo,
+             R.ELEMENTO,
+             R.UNIDAD,
+             simbolo,
+             (select descripcion
+                from ged_m_lista
+               where tipo = '04_DC_APROXIMACION'
+                 and codigo = R.SIMBOLO) nomsimbolo,
+             R.VALOR,
+             R.CD_ESTUDIO_LABO METODO
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO R
+       WHERE ((IN_OBJECTID IS NULL OR R.objectid = IN_OBJECTID) AND
+             (IN_CODIGOMUESTRA IS NULL OR
+             UPPER(cd_mtra) = UPPER(IN_CODIGOMUESTRA)))
+      /*AND historial = 'A'*/
+       ORDER BY orden;
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_LISTAR_ANALISIS_RM;
+
+  PROCEDURE P_LISTAR_ANALISIS_RM(IN_OBJECTID      VARCHAR2,
+                                 IN_CODIGOMUESTRA VARCHAR2,
+                                 IN_SUBPROY       VARCHAR2,
+                                 OUT_CURSOR       OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      select R.objectid,
+             r.cd_mtra,
+             R.TIPO COD_TIPO,
+             (select descripcion
+                from ged_m_lista
+               where tipo = '04_DC_ST_PM06'
+                 and detalle = 'BDGEO_WEB_DOMINIOS'
+                 and codigo = r.tipo) tipo,
+             R.ELEMENTO,
+             R.UNIDAD,
+             simbolo,
+             (select descripcion
+                from ged_m_lista
+               where tipo = '04_DC_APROXIMACION'
+                 and codigo = R.SIMBOLO) nomsimbolo,
+             R.VALOR,
+             R.CD_ESTUDIO_LABO METODO
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO R
+       WHERE ((IN_OBJECTID IS NULL OR R.objectid = IN_OBJECTID) AND
+             (IN_CODIGOMUESTRA IS NULL OR
+             UPPER(cd_mtra) = UPPER(IN_CODIGOMUESTRA)))
+         AND R.CD_SUB_PROY = IN_SUBPROY
+      /*AND historial = 'A'*/
+       ORDER BY orden;
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_LISTAR_ANALISIS_RM;
+
+  PROCEDURE P_OPE_ROCASYMENAS_ANALISIS(IN_OPCION          VARCHAR2,
+                                       IN_OBJECTID        VARCHAR2,
+                                       IN_CODMUESTRA      VARCHAR2,
+                                       IN_TIPO            VARCHAR2,
+                                       IN_ELEMENTO        VARCHAR2,
+                                       IN_UNIDAD          VARCHAR2,
+                                       IN_SIMBOLO         VARCHAR2,
+                                       IN_VALOR           VARCHAR2,
+                                       IN_REGISTROUSUARIO VARCHAR2,
+                                       OUT_ESTADO         OUT NUMBER,
+                                       OUT_MENSAJE        OUT VARCHAR2,
+                                       OUT_RETVAL         OUT NUMBER) IS
+    V_ORDEN    NUMBER;
+    V_OBJECTID NUMBER;
+  BEGIN
+    OUT_ESTADO  := 0;
+    OUT_MENSAJE := NULL;
+    OUT_RETVAL  := 0;
+    IF IN_OPCION = 'INS' THEN
+      SELECT NVL(MAX(objectid) + 1, 1)
+        INTO V_OBJECTID
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO;
+    
+      SELECT NVL(MAX(ORDEN) + 1, 1)
+        INTO V_ORDEN
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO
+       WHERE CD_MTRA = IN_CODMUESTRA;
+      if IN_ELEMENTO is not null then
+        insert into DATA_EDIT.TB_RM_05_LABORATORIO
+          (OBJECTID,
+           CD_MTRA,
+           TIPO,
+           ELEMENTO,
+           UNIDAD,
+           SIMBOLO,
+           VALOR,
+           ORDEN,
+           --HISTORIAL,
+           CREATIONDATE,
+           CREATOR,
+           GLOBALID)
+        values
+          (V_OBJECTID,
+           IN_CODMUESTRA,
+           IN_TIPO,
+           IN_ELEMENTO,
+           IN_UNIDAD,
+           IN_SIMBOLO,
+           DECODE(IN_VALOR,
+                  NULL,
+                  NULL,
+                  ROUND(TO_NUMBER(REPLACE(IN_VALOR, '.', ',')), 2)),
+           V_ORDEN,
+           --'A',
+           sysdate,
+           IN_REGISTROUSUARIO,
+           sde.version_user_ddl.retrieve_guid);
+        OUT_ESTADO := 1;
+        OUT_RETVAL := V_OBJECTID;
+      end if;
+    
+    ELSIF IN_OPCION = 'UPD' THEN
+      if IN_ELEMENTO is not null then
+        update DATA_EDIT.TB_RM_05_LABORATORIO
+           set cd_mtra  = IN_CODMUESTRA,
+               tipo     = IN_TIPO,
+               elemento = IN_ELEMENTO,
+               unidad   = IN_UNIDAD,
+               simbolo  = IN_SIMBOLO,
+               valor    = DECODE(IN_VALOR,
+                                 NULL,
+                                 NULL,
+                                 ROUND(TO_NUMBER(REPLACE(IN_VALOR, '.', ',')),
+                                       2)),
+               orden    = v_orden,
+               --Historial = 'A',
+               EDITDATE = SYSDATE,
+               EDITOR   = IN_REGISTROUSUARIO
+         WHERE OBJECTID = IN_OBJECTID;
+        OUT_ESTADO := 1;
+        OUT_RETVAL := IN_OBJECTID;
+      end if;
+    ELSIF IN_OPCION = 'DEL' THEN
+      DELETE FROM DATA_EDIT.TB_RM_05_LABORATORIO
+       where CD_MTRA = IN_CODMUESTRA
+         AND OBJECTID = IN_OBJECTID;
+      --UPDATE DATA_EDIT.tb_pm_06_resultado
+      --SET HISTORIAL = 'I'
+      -- where CD_MTRA = IN_CODMUESTRA AND OBJECTID = IN_OBJECTID;
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := IN_OBJECTID;
+    END IF;
+    COMMIT;
+  EXCEPTION
+    WHEN OTHERS THEN
+      OUT_RETVAL := 0;
+      OUT_ESTADO := 2;
+  END P_OPE_ROCASYMENAS_ANALISIS;
+
+  -- **************************************************
+  -- Modulo:BDGeocientifica  
+  -- **************************************************
+  PROCEDURE P_OPE_MULTIMEDIA(IN_OPCION        VARCHAR2,
+                             IN_OBJECTID      DATA_EDIT.TB_RM_06_MULTIMEDIA.OBJECTID%TYPE,
+                             IN_CODIGOMUESTRA DATA_EDIT.TB_RM_06_MULTIMEDIA.CD_MTRA%TYPE,
+                             IN_TITULO        DATA_EDIT.TB_RM_06_MULTIMEDIA.TITULO%TYPE,
+                             IN_FECHA         VARCHAR2,
+                             IN_AUTOR         DATA_EDIT.TB_RM_06_MULTIMEDIA.AUTOR%TYPE,
+                             IN_TIPO          DATA_EDIT.TB_RM_06_MULTIMEDIA.TIPO%TYPE,
+                             IN_LINK          DATA_EDIT.TB_RM_06_MULTIMEDIA.LINK%TYPE,
+                             IN_DESCP         DATA_EDIT.TB_RM_06_MULTIMEDIA.DSCP%TYPE,
+                             IN_OBS           DATA_EDIT.TB_RM_06_MULTIMEDIA.OBS%TYPE,
+                             IN_ARCHIVO       DATA_EDIT.TB_RM_06_MULTIMEDIA.ARCHIVO%TYPE,
+                             IN_EXT_ARCH      VARCHAR2,
+                             IN_USERREGISTRO  VARCHAR2,
+                             OUT_ESTADO       OUT NUMBER,
+                             OUT_MENSAJE      OUT VARCHAR2,
+                             OUT_RETVAL       OUT NUMBER) IS
+    V_OBJECTID      NUMBER;
+    V_LENGTHARCHIVO NUMBER;
+    pSubProyecto    VARCHAR2(15);
+    pAnnoPOI        VARCHAR2(10);
+    URL             varchar2(1000);
+    PAQUETE         varchar2(1000);
+    cadena          varchar2(4000);
+  BEGIN
+    URL         := 'https://geocatminapp.ingemmet.gob.pe/bdgeocientifica/Modulos/Utils/ResponseMultimedia.ashx?key=';
+    PAQUETE     := 'pack_dba_bdgeo_roca_mena.p_listar_multimedia';
+    OUT_ESTADO  := 0;
+    OUT_MENSAJE := NULL;
+    OUT_RETVAL  := 0;
+  
+    IF IN_OPCION = 'INS' THEN
+      SELECT NVL(MAX(objectid) + 1, 1)
+        INTO V_OBJECTID
+        FROM DATA_EDIT.TB_RM_06_MULTIMEDIA;
+    
+      INSERT INTO DATA_EDIT.TB_RM_06_MULTIMEDIA
+        (objectid,
+         cd_mtra,
+         titulo,
+         fecha,
+         autor,
+         tipo,
+         link,
+         dscp,
+         obs,
+         archivo,
+         ext_arch,
+         orden,
+         --historial,
+         F_REGISTRO,
+         REGISTRADO,
+         globalid)
+      VALUES
+        (V_OBJECTID,
+         IN_CODIGOMUESTRA,
+         IN_TITULO,
+         TO_DATE(IN_FECHA, 'DD/MM/YYYY'),
+         IN_AUTOR,
+         IN_TIPO,
+         IN_LINK,
+         IN_DESCP,
+         IN_OBS,
+         IN_ARCHIVO,
+         IN_EXT_ARCH,
+         V_OBJECTID,
+         --'A',
+         SYSDATE,
+         IN_USERREGISTRO,
+         sde.version_user_ddl.retrieve_guid);
+    
+      --documentos adjuntos
+      SELECT GL.CODIGO, P.ANNO_POI
+        INTO pSubProyecto, pAnnoPOI
+        FROM GED_M_LISTA GL
+       INNER JOIN BDT_M_PROYECTO P
+          ON P.CODIGO_INTERNO_PROYECTO = GL.ADICIONAL
+         AND GL.ADICIONAL = IN_LINK;
+    
+      UPDATE DATA_EDIT.TB_RM_06_MULTIMEDIA
+         SET COD_INT_PROY = IN_LINK,
+             SUB_PROY     = pSubProyecto,
+             ANNO_PROY    = pAnnoPOI
+       WHERE link = IN_LINK;
+    
+      --Actualizar campo Geologia
+      UPDATE DATA_EDIT.GPT_RM_ROCA_MENA
+         SET GEOLOGIA = IN_DESCP
+       WHERE CD_MTRA = IN_CODIGOMUESTRA
+         AND SUB_PROY = pSubProyecto;
+    
+      ---actualizar Doc-Adjuntos
+      IF IN_CODIGOMUESTRA = 'DOC_ADJUNTO' THEN
+      
+        FOR R IN (SELECT CD_MTRA, SUB_PROY
+                    FROM DATA_EDIT.GPT_RM_ROCA_MENA
+                   WHERE SUB_PROY = 'GE33B-5|CA-1') LOOP
+          FOR S IN (SELECT MU.OBJECTID,
+                           RM.CD_MTRA,
+                           MU.TITULO,
+                           MU.EXT_ARCH,
+                           MU.SUB_PROY
+                      FROM DATA_EDIT.TB_RM_06_MULTIMEDIA MU
+                     INNER JOIN DATA_EDIT.GPT_RM_ROCA_MENA RM
+                        ON RM.SUB_PROY = MU.SUB_PROY
+                       AND MU.CD_MTRA = 'DOC_ADJUNTO'
+                       AND RM.SUB_PROY = 'GE33B-5|CA-1'
+                       AND RM.CD_MTRA = R.CD_MTRA) LOOP
+            CADENA := CADENA || '<a href = ' || CHR(34) || URL ||
+                      S.OBJECTID || CHR(38) || 'sp=' || PAQUETE || CHR(38) ||
+                      'ext=' || S.EXT_ARCH || CHR(34) || '><font size=2> ' ||
+                      S.TITULO || '</a></font><br>';
+          
+          END LOOP;
+          UPDATE DATA_EDIT.GPT_RM_ROCA_MENA
+             SET RESULTADO_LABORATORIO = CADENA
+           WHERE CD_MTRA = R.CD_MTRA
+             AND SUB_PROY = PSUBPROYECTO;
+          CADENA := '';
+        END LOOP;
+      
+      END IF;
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := V_OBJECTID;
+    
+    ELSIF IN_OPCION = 'UPD' THEN
+      V_LENGTHARCHIVO := dbms_lob.getlength(IN_ARCHIVO);
+      IF V_LENGTHARCHIVO > 0 THEN
+        UPDATE DATA_EDIT.TB_RM_06_MULTIMEDIA
+           SET titulo   = IN_TITULO,
+               fecha    = IN_FECHA,
+               autor    = IN_AUTOR,
+               tipo     = IN_TIPO,
+               link     = IN_LINK,
+               dscp     = IN_DESCP,
+               obs      = IN_OBS,
+               archivo  = IN_ARCHIVO,
+               ext_arch = IN_EXT_ARCH,
+               F_CAMBIO = SYSDATE,
+               CAMBIADO = IN_USERREGISTRO
+         WHERE objectid = IN_OBJECTID;
+      ELSE
+        UPDATE DATA_EDIT.TB_RM_06_MULTIMEDIA
+           SET TITULO   = IN_TITULO,
+               FECHA    = IN_FECHA,
+               AUTOR    = IN_AUTOR,
+               TIPO     = IN_TIPO,
+               LINK     = IN_LINK,
+               DSCP     = IN_DESCP,
+               OBS      = IN_OBS,
+               F_CAMBIO = SYSDATE,
+               CAMBIADO = IN_USERREGISTRO
+         WHERE OBJECTID = IN_OBJECTID;
+      END IF;
+    
+      --Actualizar campo Geologia
+      UPDATE DATA_EDIT.GPT_RM_ROCA_MENA
+         SET GEOLOGIA = '<font size=2>' || IN_DESCP || '</font>'
+       WHERE CD_MTRA = IN_CODIGOMUESTRA
+         AND SUB_PROY = (SELECT SUB_PROY
+                           FROM DATA_EDIT.TB_RM_06_MULTIMEDIA MU
+                          WHERE MU.OBJECTID = IN_OBJECTID);
+    
+      ---actualizar Doc-Adjuntos
+      IF IN_CODIGOMUESTRA = 'DOC_ADJUNTO' THEN
+        FOR R IN (SELECT MU.OBJECTID,
+                         RM.CD_MTRA,
+                         MU.TITULO,
+                         MU.EXT_ARCH,
+                         MU.SUB_PROY
+                    FROM DATA_EDIT.TB_RM_06_MULTIMEDIA MU
+                   INNER JOIN DATA_EDIT.GPT_RM_ROCA_MENA RM
+                      ON RM.SUB_PROY = MU.SUB_PROY
+                     AND MU.CD_MTRA = 'DOC_ADJUNTO'
+                     AND RM.SUB_PROY = pSubProyecto) LOOP
+          CADENA := CADENA || '<a href = ' || CHR(34) || URL || R.OBJECTID ||
+                    CHR(38) || 'sp=' || PAQUETE || CHR(38) || 'ext=' ||
+                    R.EXT_ARCH || CHR(34) || '><font size=2> ' || R.TITULO ||
+                    '</a></font><br>';
+          UPDATE DATA_EDIT.GPT_RM_ROCA_MENA
+             SET RESULTADO_LABORATORIO = CADENA
+           WHERE CD_MTRA = R.CD_MTRA
+             AND SUB_PROY = PSUBPROYECTO;
+          CADENA := '';
+        END LOOP;
+      END IF;
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := IN_OBJECTID;
+    
+    ELSIF IN_OPCION = 'DEL' THEN
+    
+      SELECT MU.SUB_PROY
+        into pSubProyecto
+        FROM DATA_EDIT.TB_RM_06_MULTIMEDIA MU
+       WHERE MU.OBJECTID = IN_OBJECTID;
+    
+      DELETE FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+       WHERE OBJECTID = IN_OBJECTID;
+    
+      --Actualizar campo RESULTADO_LABORATORIO  
+      UPDATE DATA_EDIT.GPT_RM_ROCA_MENA RM
+         SET RM.RESULTADO_LABORATORIO = NULL
+       WHERE RM.SUB_PROY = pSubProyecto;
+    
+      FOR R IN (SELECT MU.OBJECTID,
+                       RM.CD_MTRA,
+                       MU.TITULO,
+                       MU.EXT_ARCH,
+                       MU.SUB_PROY
+                  FROM DATA_EDIT.TB_RM_06_MULTIMEDIA MU
+                 INNER JOIN DATA_EDIT.GPT_RM_ROCA_MENA RM
+                    ON RM.SUB_PROY = MU.SUB_PROY
+                   AND MU.CD_MTRA = 'DOC_ADJUNTO'
+                   AND RM.SUB_PROY = pSubProyecto) LOOP
+        CADENA := CADENA || '<a href = ' || CHR(34) || URL || R.OBJECTID ||
+                  CHR(38) || 'sp=' || PAQUETE || CHR(38) || 'ext=' ||
+                  R.EXT_ARCH || CHR(34) || '><font size=2> ' || R.TITULO ||
+                  '</a></font><br>';
+      
+        UPDATE DATA_EDIT.GPT_RM_ROCA_MENA
+           SET RESULTADO_LABORATORIO = CADENA
+         WHERE CD_MTRA = R.CD_MTRA
+           AND SUB_PROY = pSubProyecto;
+        CADENA := '';
+      END LOOP;
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := IN_OBJECTID;
+    END IF;
+    COMMIT;
+  EXCEPTION
+    WHEN OTHERS THEN
+      OUT_RETVAL  := 0;
+      OUT_ESTADO  := 2;
+      OUT_MENSAJE := SQLERRM;
+      ROLLBACK;
+  END P_OPE_MULTIMEDIA;
+
+  -- ************************************************
+  -- Modulo:BDGeocientifica  
+  -- ************************************************
+  PROCEDURE P_LISTAR_MULTIMEDIA(IN_TIPOMULTIMEDIA VARCHAR2,
+                                IN_OBJECTID       DATA_EDIT.TB_RM_06_MULTIMEDIA.OBJECTID%TYPE,
+                                IN_CODIGOMUESTRA  DATA_EDIT.TB_RM_06_MULTIMEDIA.CD_MTRA%TYPE,
+                                OUT_CURSOR        OUT SYS_REFCURSOR) IS
+  
+  BEGIN
+    IF IN_TIPOMULTIMEDIA IS NULL THEN
+      OPEN OUT_CURSOR FOR
+        SELECT objectid,
+               cd_mtra,
+               titulo,
+               TO_CHAR(fecha, 'DD/MM/YYYY') fecha,
+               autor,
+               tipo,
+               link,
+               dscp,
+               obs,
+               ext_arch,
+               NVL(dbms_lob.getlength(archivo), 0) length_archivo
+          FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+         WHERE (IN_OBJECTID IS NULL OR objectid = IN_OBJECTID)
+           AND (IN_CODIGOMUESTRA IS NULL OR
+               UPPER(cd_mtra) = UPPER(IN_CODIGOMUESTRA))
+        UNION ALL
+        SELECT OBJECTID,
+               CD_MTRA,
+               TITULO,
+               TO_CHAR(FECHA, 'DD/MM/YYYY') FECHA,
+               AUTOR,
+               TIPO,
+               LINK,
+               DSCP,
+               OBS,
+               EXT_ARCH,
+               NVL(DBMS_LOB.GETLENGTH(ARCHIVO), 0) LENGTH_ARCHIVO
+          FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+         WHERE (UPPER(SUB_PROY) IN
+               (SELECT SUB_PROY
+                   FROM DATA_EDIT.GPT_RM_ROCA_MENA
+                  WHERE UPPER(CD_MTRA) = UPPER(IN_CODIGOMUESTRA)))
+           AND CD_MTRA = 'DOC_ADJUNTO';
+    
+    ELSE
+      OPEN OUT_CURSOR FOR
+        SELECT archivo multimedia
+          FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+         WHERE objectid = IN_OBJECTID;
+    END IF;
+  
+  END P_LISTAR_MULTIMEDIA;
+
+  PROCEDURE P_LISTAR_MULTIMEDIA(IN_TIPOMULTIMEDIA VARCHAR2,
+                                IN_OBJECTID       DATA_EDIT.TB_RM_06_MULTIMEDIA.OBJECTID%TYPE,
+                                IN_CODIGOMUESTRA  DATA_EDIT.TB_RM_06_MULTIMEDIA.CD_MTRA%TYPE,
+                                IN_SUBPROYECTO    VARCHAR2,
+                                OUT_CURSOR        OUT SYS_REFCURSOR) IS
+  
+  BEGIN
+    IF IN_TIPOMULTIMEDIA IS NULL THEN
+      OPEN OUT_CURSOR FOR
+        SELECT objectid,
+               cd_mtra,
+               titulo,
+               TO_CHAR(fecha, 'DD/MM/YYYY') fecha,
+               autor,
+               tipo,
+               link,
+               dscp,
+               obs,
+               ext_arch,
+               NVL(dbms_lob.getlength(archivo), 0) length_archivo
+          FROM DATA_EDIT.TB_RM_06_MULTIMEDIA MU
+         WHERE (IN_OBJECTID IS NULL OR objectid = IN_OBJECTID)
+           AND (IN_CODIGOMUESTRA IS NULL OR
+               UPPER(cd_mtra) = UPPER(IN_CODIGOMUESTRA))
+           AND MU.SUB_PROY = IN_SUBPROYECTO
+        UNION ALL
+        SELECT OBJECTID,
+               CD_MTRA,
+               TITULO,
+               TO_CHAR(FECHA, 'DD/MM/YYYY') FECHA,
+               AUTOR,
+               TIPO,
+               LINK,
+               DSCP,
+               OBS,
+               EXT_ARCH,
+               NVL(DBMS_LOB.GETLENGTH(ARCHIVO), 0) LENGTH_ARCHIVO
+          FROM DATA_EDIT.TB_RM_06_MULTIMEDIA MU
+         WHERE (UPPER(SUB_PROY) IN
+               (SELECT SUB_PROY
+                   FROM DATA_EDIT.GPT_RM_ROCA_MENA
+                  WHERE UPPER(CD_MTRA) = UPPER(IN_CODIGOMUESTRA)))
+           AND CD_MTRA = 'DOC_ADJUNTO'
+           AND MU.SUB_PROY = IN_SUBPROYECTO;
+    
+    ELSE
+      OPEN OUT_CURSOR FOR
+        SELECT archivo multimedia
+          FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+         WHERE objectid = IN_OBJECTID;
+    END IF;
+  
+  END P_LISTAR_MULTIMEDIA;
+
+  PROCEDURE P_Listar_Alteraciones_RM(IN_OBJECTID      VARCHAR2,
+                                     IN_CODIGOMUESTRA VARCHAR2,
+                                     OUT_CURSOR       OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      select R.objectid,
+             R.cd_mtra,
+             R.alteracion,
+             (select descripcion
+                from ged_m_lista
+               where tipo = 'BDT_YM_TIPO_ALTERACION'
+                 and codigo = R.alteracion) nom_alteracion,
+             R.grupo_altr grupo,
+             (select descripcion
+                from ged_m_lista
+               where tipo = 'YM_GRUPO_ALTERACIONES'
+                 and codigo = R.grupo_altr) nom_grupo,
+             R.intensidad,
+             R.mineral,
+             (select descripcion
+                from ged_m_lista a
+               where tipo = 'YM_MINERAL_ALTERACIONES'
+                 and adicional = R.alteracion
+                 and adicional2 = R.grupo_altr
+                 and codigo = R.mineral) nom_mineral,
+             R.e_alteracion,
+             F_Nom_Estilo_Alteracion(R.CD_MTRA, R.OBJECTID) nom_e_alteracion
+      
+        from DATA_EDIT.TB_RM_CARACTMIN_ALTER R
+       WHERE ((IN_OBJECTID IS NULL OR R.objectid = IN_OBJECTID) AND
+             (IN_CODIGOMUESTRA IS NULL OR
+             UPPER(cd_mtra) = UPPER(IN_CODIGOMUESTRA)))
+       ORDER BY orden;
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_Listar_Alteraciones_RM;
+
+  PROCEDURE P_OPE_ALTERACION_RM(IN_OPCION     VARCHAR2,
+                                IN_OBJECTID   VARCHAR2,
+                                IN_CODMUESTRA VARCHAR2,
+                                IN_ALTERACION VARCHAR2,
+                                IN_GRUPO      VARCHAR2,
+                                IN_INTENSIDAD VARCHAR2,
+                                IN_MINERAL    VARCHAR2,
+                                IN_REGISTRADO VARCHAR2,
+                                V_ESTILO_ALT  VARCHAR2,
+                                OUT_ESTADO    OUT NUMBER,
+                                OUT_MENSAJE   OUT VARCHAR2,
+                                OUT_RETVAL    OUT NUMBER) IS
+    V_ORDEN    NUMBER;
+    V_OBJECTID NUMBER;
+  BEGIN
+    OUT_ESTADO  := 0;
+    OUT_MENSAJE := NULL;
+    OUT_RETVAL  := 0;
+    SELECT NVL(MAX(objectid) + 1, 1)
+      INTO V_OBJECTID
+      FROM DATA_EDIT.TB_RM_CARACTMIN_ALTER;
+    IF IN_OPCION = 'INS' THEN
+    
+      SELECT NVL(MAX(ORDEN) + 1, 1)
+        INTO V_ORDEN
+        FROM DATA_EDIT.TB_RM_CARACTMIN_ALTER
+       WHERE CD_MTRA = IN_CODMUESTRA;
+    
+      insert into DATA_EDIT.TB_RM_CARACTMIN_ALTER
+        (objectid,
+         cd_mtra,
+         alteracion,
+         grupo_altr,
+         intensidad,
+         mineral,
+         orden,
+         creationdate,
+         creator,
+         e_alteracion,
+         globalid)
+      values
+        (V_OBJECTID,
+         IN_CODMUESTRA,
+         IN_ALTERACION,
+         IN_GRUPO,
+         IN_INTENSIDAD,
+         IN_MINERAL,
+         v_orden,
+         SYSDATE,
+         in_registrado,
+         V_ESTILO_ALT,
+         sde.version_user_ddl.retrieve_guid);
+      OUT_ESTADO := 1;
+      OUT_RETVAL := V_OBJECTID;
+    
+    ELSIF IN_OPCION = 'UPD' THEN
+    
+      update DATA_EDIT.TB_RM_CARACTMIN_ALTER
+         set cd_mtra      = IN_CODMUESTRA,
+             alteracion   = in_alteracion,
+             grupo_altr   = in_grupo,
+             intensidad   = in_intensidad,
+             mineral      = in_mineral,
+             orden        = v_orden,
+             editdate     = sysdate,
+             editor       = in_registrado,
+             e_alteracion = V_ESTILO_ALT
+       where OBJECTID = IN_OBJECTID;
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := IN_OBJECTID;
+    
+    ELSIF IN_OPCION = 'DEL' THEN
+      DELETE FROM DATA_EDIT.TB_RM_CARACTMIN_ALTER
+       where CD_MTRA = IN_CODMUESTRA
+         AND OBJECTID = IN_OBJECTID;
+      OUT_ESTADO := 1;
+      OUT_RETVAL := IN_OBJECTID;
+    END IF;
+    COMMIT;
+  EXCEPTION
+    WHEN OTHERS THEN
+      OUT_RETVAL := 0;
+      OUT_ESTADO := 2;
+  END P_OPE_ALTERACION_RM;
+
+  PROCEDURE P_SEL_GED_M_LISTA(V_OPCION    IN VARCHAR2,
+                              V_TIPO      IN VARCHAR2,
+                              V_SUBTIPO_1 IN VARCHAR2,
+                              V_SUBTIPO_2 IN VARCHAR2,
+                              OUT_CURSOR  OUT SYS_REFCURSOR) IS
+  BEGIN
+    IF V_OPCION = 1 THEN
+      OPEN OUT_CURSOR FOR
+        SELECT '' CODIGO, '--Seleccionar--' DESCRIPCION
+          FROM DUAL
+        UNION ALL
+        SELECT to_char(a.grupo) CODIGO, d.descripcion DESCRIPCION
+          FROM ym_r_alteracion_grupo a,
+               (select * from ged_m_lista where tipo = v_tipo) d
+         WHERE a.alteracion = v_subtipo_1
+           AND a.grupo = d.codigo(+);
+    ELSIF V_OPCION = 2 THEN
+      OPEN OUT_CURSOR FOR
+        SELECT '' CODIGO, '--Seleccionar--' DESCRIPCION
+          FROM DUAL
+        UNION ALL
+        SELECT CODIGO, INITCAP(DESCRIPCION) DESCRIPCION
+          FROM (SELECT CODIGO, DESCRIPCION
+                  FROM GED_M_LISTA A
+                 WHERE TIPO = V_TIPO
+                   AND INDICADOR_ACTIVO = 'A'
+                   AND ADICIONAL = V_SUBTIPO_1
+                   AND ADICIONAL2 = V_SUBTIPO_2
+                 ORDER BY DESCRIPCION);
+    END IF;
+  
+  END P_SEL_GED_M_LISTA;
+
+  procedure p_buscar_mineral_roca(in_paginatamano number,
+                                  in_paginanumero number,
+                                  in_codsubtipo   varchar2,
+                                  in_descripcion  varchar2,
+                                  out_cursor      out sys_refcursor) is
+    v_error varchar2(100);
+  begin
+    v_error := null;
+  
+    open out_cursor for
+      select *
+        from (select row_number() over(order by gml.descripcion) rn,
+                     gml.codigo,
+                     gml.descripcion
+                from ged_m_lista gml
+               where upper(gml.tipo) = '04_RH_ROCA'
+                 and upper(gml.codigo) like upper(in_codsubtipo || '%')
+                 and upper(gml.descripcion) like
+                     '%' || upper(in_descripcion) || '%'
+                 and gml.indicador_activo = 'A')
+       where rn between in_paginanumero + 1 and
+             in_paginanumero + in_paginatamano;
+  exception
+    when others then
+      v_error := sqlcode || ' ' || sqlerrm;
+      raise_application_error(-20000, v_error);
+  end p_buscar_mineral_roca;
+
+  -- ************************************************
+  -- Modulo:BDGeocientifica  
+
+  -- ************************************************
+  function p_total_buscar_mineral_roca(in_codsubtipo  varchar2,
+                                       in_descripcion varchar2) return number is
+    totalrows number;
+  begin
+    totalrows := 0;
+    select count(*)
+      into totalrows
+      from ged_m_lista gml
+     where upper(gml.tipo) = upper('04_RH_ROCA')
+       and upper(gml.codigo) like upper(in_codsubtipo || '%')
+       and gml.descripcion like '%' || in_descripcion || '%'
+       and gml.indicador_activo = 'A';
+    return totalrows;
+  end p_total_buscar_mineral_roca;
+
+  procedure p_listar_geologo(in_codsubproyecto varchar2,
+                             out_cursor        out sys_refcursor) is
+    v_error varchar2(100);
+  begin
+    v_error := null;
+    open out_cursor for
+      select i.usuario codigo, --p.codigo_integrante 
+             initcap(i.nombres_y_apellidos) descripcion
+        from bdt_r_int_proy p, ged_m_lista l, bdt_m_integrante i
+       where l.adicional = p.codigo_interno_proyecto
+         and i.codigo_integrante = p.codigo_integrante
+         and upper(l.tipo) = upper('04_DC_ProyectoSub')
+         and l.codigo = in_codsubproyecto
+       order by i.nombres_y_apellidos;
+  
+  exception
+    when others then
+      v_error := sqlcode || ' ' || sqlerrm;
+      raise_application_error(-20000, v_error);
+  end p_listar_geologo;
+
+  PROCEDURE P_OPE_ESTRUCTURA(IN_OPCION        VARCHAR2,
+                             IN_OBJECTID      VARCHAR2,
+                             IN_CODMUESTRA    VARCHAR2,
+                             IN_REGISTRADO    VARCHAR2,
+                             IN_TIPO          VARCHAR2,
+                             IN_SUBTIPO       VARCHAR2,
+                             IN_AZIMUT        VARCHAR2,
+                             IN_RUMBO         VARCHAR2,
+                             IN_D_RUMBO       VARCHAR2,
+                             IN_BUZAMIENTO    VARCHAR2,
+                             IN_D_BUZAMIENTO  VARCHAR2,
+                             IN_PITCH         VARCHAR2,
+                             IN_DPITCH        VARCHAR2,
+                             IN_PLUNGE        VARCHAR2,
+                             IN_DPLUNGE       VARCHAR2,
+                             IN_OBSESTRUCTURA VARCHAR2,
+                             OUT_ESTADO       OUT NUMBER,
+                             OUT_MENSAJE      OUT VARCHAR2,
+                             OUT_RETVAL       OUT NUMBER) IS
+    V_ORDEN    NUMBER;
+    V_OBJECTID NUMBER;
+  BEGIN
+    OUT_ESTADO  := 0;
+    OUT_MENSAJE := NULL;
+    OUT_RETVAL  := 0;
+    IF IN_OPCION = 'INS' THEN
+      SELECT NVL(MAX(objectid) + 1, 1)
+        INTO V_OBJECTID
+        FROM DATA_EDIT.TB_RM_MINERALIZACION_ESTR;
+    
+      SELECT NVL(MAX(ORDEN) + 1, 1)
+        INTO V_ORDEN
+        FROM DATA_EDIT.TB_RM_MINERALIZACION_ESTR
+       WHERE CD_MTRA = IN_CODMUESTRA;
+    
+      insert into DATA_EDIT.TB_RM_MINERALIZACION_ESTR
+        (objectid,
+         cd_mtra,
+         orden,
+         CREATIONDATE,
+         CREATOR,
+         globalid,
+         tipo,
+         subtipo,
+         azimut,
+         rumbo,
+         d_rumbo,
+         buzamiento,
+         d_buzamiento,
+         pitch,
+         d_pitch,
+         plunge,
+         d_plunge,
+         OBSERVACION)
+      values
+        (v_objectid,
+         IN_CODMUESTRA,
+         v_orden,
+         sysdate,
+         in_registrado,
+         sde.version_user_ddl.retrieve_guid,
+         IN_tipo,
+         IN_SUBTIPO,
+         IN_azimut,
+         IN_rumbo,
+         IN_d_rumbo,
+         IN_buzamiento,
+         IN_d_buzamiento,
+         IN_PITCH,
+         IN_DPITCH,
+         IN_PLUNGE,
+         IN_DPLUNGE,
+         IN_OBSESTRUCTURA);
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := V_OBJECTID;
+    
+    ELSIF IN_OPCION = 'UPD' THEN
+    
+      update DATA_EDIT.TB_RM_MINERALIZACION_ESTR
+         set EDITDATE     = sysdate,
+             EDITOR       = in_registrado,
+             tipo         = in_tipo,
+             subtipo      = IN_SUBTIPO,
+             azimut       = in_azimut,
+             rumbo        = in_rumbo,
+             d_rumbo      = in_d_rumbo,
+             buzamiento   = in_buzamiento,
+             d_buzamiento = in_d_buzamiento,
+             pitch        = IN_PITCH,
+             d_pitch      = IN_DPITCH,
+             plunge       = IN_PLUNGE,
+             d_plunge     = IN_DPLUNGE,
+             OBSERVACION  = IN_OBSESTRUCTURA
+       where objectid = in_objectid;
+      OUT_ESTADO := 1;
+      OUT_RETVAL := IN_OBJECTID;
+    
+    ELSIF IN_OPCION = 'DEL' THEN
+      DELETE FROM DATA_EDIT.TB_RM_MINERALIZACION_ESTR
+       where CD_MTRA = IN_CODMUESTRA
+         AND OBJECTID = IN_OBJECTID;
+    
+      OUT_ESTADO := 1;
+      OUT_RETVAL := IN_OBJECTID;
+    END IF;
+    COMMIT;
+  EXCEPTION
+    WHEN OTHERS THEN
+      OUT_RETVAL := 0;
+      OUT_ESTADO := 2;
+  END P_OPE_ESTRUCTURA;
+
+  PROCEDURE P_Listar_Estructura_RM(IN_OBJECTID      VARCHAR2,
+                                   IN_CODIGOMUESTRA VARCHAR2,
+                                   OUT_CURSOR       OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    if IN_OBJECTID is not null then
+      OPEN OUT_CURSOR FOR
+        select e.objectid,
+               e.cd_mtra,
+               e.tipo,
+               e.subtipo,
+               e.azimut,
+               e.rumbo,
+               e.d_rumbo,
+               e.buzamiento,
+               e.d_buzamiento,
+               e.pitch,
+               e.d_pitch,
+               e.plunge,
+               e.d_plunge,
+               E.OBSERVACION OBSESTRUCTURA,
+               e.orden
+          from DATA_EDIT.TB_RM_MINERALIZACION_ESTR e
+          left join ged_m_lista g
+            on e.tipo = g.codigo
+           and g.tipo = '04_DC_TIPO_ESTRUCTURA'
+         WHERE ((IN_OBJECTID IS NULL OR e.objectid = IN_OBJECTID) AND
+               UPPER(cd_mtra) = UPPER(IN_CODIGOMUESTRA))
+         ORDER BY e.orden;
+    else
+      OPEN OUT_CURSOR FOR
+        select e.objectid,
+               e.cd_mtra,
+               g.descripcion tipo,
+               ge.descripcion subtipo,
+               decode(e.azimut, null, '', e.azimut || '° ') azimut,
+               decode(e.rumbo, null, '', e.rumbo || '° ' || e.d_rumbo) rumbo,
+               e.d_rumbo,
+               decode(e.buzamiento,
+                      null,
+                      '',
+                      e.buzamiento || '° ' || e.d_buzamiento) buzamiento,
+               e.d_buzamiento,
+               decode(e.pitch, null, '', e.pitch || '° ' || e.d_pitch) pitch,
+               e.d_pitch,
+               decode(e.plunge, null, '', e.plunge || '° ' || e.d_plunge) plunge,
+               e.d_plunge,
+               E.OBSERVACION OBSESTRUCTURA,
+               e.orden
+          from DATA_EDIT.TB_RM_MINERALIZACION_ESTR e
+          left join ged_m_lista g
+            on e.tipo = g.codigo
+           and g.tipo = '04_DC_TIPO_ESTRUCTURA'
+          left join ged_m_lista ge
+            on e.subtipo = ge.codigo
+           and ge.tipo = '04_DC_SUBTIPO_ESTRUCTURA'
+         WHERE ((IN_OBJECTID IS NULL OR e.objectid = IN_OBJECTID) AND
+               UPPER(cd_mtra) = UPPER(IN_CODIGOMUESTRA))
+         ORDER BY e.orden;
+    end if;
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_Listar_Estructura_RM;
+
+  PROCEDURE P_REPORTE01(OUT_CURSOR OUT SYS_REFCURSOR) IS
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      select r.proy proyecto,
+             r.sub_proy subproyecto,
+             r.cd_mtra codigo,
+             r.colectado,
+             to_char(r.f_mtra, 'dd/mm/yyyy') fecha
+        from DATA_EDIT.GPT_RM_ROCA_MENA r
+       ORDER BY R.PROY;
+  
+  END P_REPORTE01;
+
+  FUNCTION F_TOTAL_ROCASYMENAS_MOD(IN_CODIGOMUESTRA    varchar2,
+                                   IN_OBJECTID         number,
+                                   IN_COD_INT_PROYECTO varchar2,
+                                   IN_USUARIO          varchar2)
+  
+   RETURN NUMBER IS
+    V_ERROR   VARCHAR2(100);
+    TotalRows number;
+  BEGIN
+    v_error := null;
+  
+    SELECT COUNT(1)
+      INTO TotalRows
+      from DATA_EDIT.GPT_RM_ROCA_MENA a --evw
+     inner join data_gis.gpo_dep_distrito b
+        on a.distrito = b.cd_dist(+)
+     where (in_codigomuestra is null or
+           upper(a.a_its) like upper('%' || in_codigomuestra) || '%')
+       and proy =
+           (select codigo_proyecto
+              from bdt_m_proyecto
+             where codigo_interno_proyecto = IN_COD_INT_PROYECTO)
+       and (in_usuario is null or a.colectado = in_usuario);
+  
+    RETURN TotalRows;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END F_TOTAL_ROCASYMENAS_MOD;
+
+  PROCEDURE P_REP_MODULO_RM_WEB(OUT_CURSOR OUT SYS_REFCURSOR) IS
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      select p.codigo_proyecto proy,
+             p.codigo_interno_proyecto sub_proy,
+             upper(p.descripcion) descripcion,
+             count(*) registro
+        from BDGRMS_D_ROCA_MENA R
+       inner join bdt_m_proyecto p
+          on p.codigo_interno_proyecto = r.codigo_interno_proyecto
+       group by p.codigo_interno_proyecto,
+                p.codigo_proyecto,
+                upper(p.descripcion);
+  
+  END P_REP_MODULO_RM_WEB;
+
+  PROCEDURE P_REP_MODULO_RM_DK(OUT_CURSOR OUT SYS_REFCURSOR) IS
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      select R.proy, R.sub_proy, g.descripcion, count(*) registro
+        from DATA_EDIT.GPT_RM_ROCA_MENA R
+       inner join ged_m_lista G
+          on g.codigo = r.sub_proy
+       group by r.proy, r.sub_proy, g.descripcion;
+  
+  END P_REP_MODULO_RM_DK;
+
+  PROCEDURE P_OPE_DATA_EXCEL(V_OPCION    VARCHAR2,
+                             V_DATO      VARCHAR2,
+                             V_METODO    VARCHAR2,
+                             V_REGISTRO  VARCHAR2,
+                             OUT_ESTADO  OUT NUMBER,
+                             OUT_MENSAJE OUT VARCHAR2,
+                             OUT_RETVAL  OUT NUMBER) IS
+    v_orden    number;
+    v_objectid number;
+    v_cd_mtra  varchar2(30);
+    v_elemento varchar2(20);
+    v_valor    varchar2(10);
+    v_tipo     varchar2(10);
+    v_unidad   varchar2(10);
+    v_simbolo  varchar2(10);
+    fila       number(4);
+    v_existe   number(2);
+  BEGIN
+    if V_METODO = '0' then
+      --Elemento
+      v_tipo := 1;
+    elsIF V_METODO = '1' then
+      v_tipo := 3;
+    end if;
+  
+    out_estado  := 0;
+    out_mensaje := null;
+    out_retval  := 0;
+    v_existe    := 0;
+    insert into x values (v_dato, 1, sysdate);
+    if v_opcion = 'INS' THEN
+      fila := 1;
+      for r in (select *
+                  from table(pack_dba_bdgeo_utils.f_split(v_dato, '|'))) loop
+      
+        ---Caso que exista el registro no lo graba
+        select count(*)
+          into v_existe
+          from DATA_EDIT.TB_RM_05_LABORATORIO
+         where upper(cd_mtra) =
+               upper(regexp_substr(r.column_value, '[^,]+', 1, 2))
+           AND METODO = V_METODO;
+        if v_existe > 0 then
+          return;
+        end if;
+      
+        if fila = 1 then
+          v_cd_mtra := regexp_substr(r.column_value, '[^,]+', 1, 2);
+        else
+          v_elemento := regexp_substr(r.column_value, '[^,]+', 1);
+          v_valor    := regexp_substr(r.column_value, '[^,]+', 1, 2);
+          v_unidad   := regexp_substr(r.column_value, '[^,]+', 1, 3);
+          --insert into x values(v_cd_mtra || ', ' || v_elemento || ',' || v_valor || ',' || v_unidad, 1, sysdate);
+        
+          insert into x
+          values
+            (r.column_value, v_valor || ' - ' || v_unidad, sysdate);
+          COMMIT;
+          select nvl(max(objectid) + 1, 1)
+            into v_objectid
+            from DATA_EDIT.TB_RM_05_LABORATORIO;
+        
+          select nvl(max(orden) + 1, 1)
+            into v_orden
+            from DATA_EDIT.TB_RM_05_LABORATORIO
+           where cd_mtra = v_cd_mtra;
+        
+          --if v_elemento is not null then
+          if v_valor != '0' then
+          
+            insert into DATA_EDIT.TB_RM_05_LABORATORIO
+              (OBJECTID,
+               CD_MTRA,
+               TIPO,
+               ELEMENTO,
+               UNIDAD,
+               SIMBOLO,
+               VALOR,
+               ORDEN,
+               --HISTORIAL,
+               CREATIONDATE,
+               CREATOR,
+               METODO,
+               GLOBALID)
+            values
+              (v_objectid,
+               v_cd_mtra,
+               v_tipo,
+               v_elemento,
+               v_unidad,
+               --v_simbolo,
+               --translate(v_valor, 'T .0123456789', 'T'),
+               (select decode(codigo, null, null, codigo)
+                  from ged_m_lista
+                 where tipo = '04_DC_APROXIMACION'
+                   and descripcion =
+                       translate(v_valor, 'T .0123456789', 'T')),
+               
+               --decode(v_valor, null, null,round(to_number(replace(v_valor, '.', ',')), 2)),
+               
+               DECODE(DECODE(translate(v_valor, 'T ><', 'T'),
+                             NULL,
+                             NULL,
+                             TO_NUMBER(REPLACE(translate(v_valor,
+                                                         'T ><',
+                                                         'T'),
+                                               '.',
+                                               ',')))
+                      
+                     ,
+                      NULL,
+                      NULL,
+                      ROUND(TO_NUMBER(REPLACE(
+                                              
+                                              DECODE(translate(v_valor,
+                                                               'T ><',
+                                                               'T'),
+                                                     NULL,
+                                                     NULL,
+                                                     TO_NUMBER(REPLACE(translate(v_valor,
+                                                                                 'T ><',
+                                                                                 'T'),
+                                                                       '.',
+                                                                       ','))),
+                                              '.',
+                                              ',')),
+                            2)),
+               v_orden,
+               --'A',
+               sysdate,
+               v_registro,
+               DECODE(V_METODO, 0, 'ELEMENTO', '1', 'ÓXIDOS'),
+               sde.version_user_ddl.retrieve_guid);
+            OUT_ESTADO := 1;
+            OUT_RETVAL := V_OBJECTID;
+          end if;
+        end if;
+        fila := fila + 1;
+      end loop;
+      --      update DATA_EDIT.TB_RM_05_LABORATORIO
+      --      set simbolo = 
+    
+      COMMIT;
+    END IF;
+  
+    --  EXCEPTION
+    --    WHEN OTHERS THEN
+    --      OUT_RETVAL := 0;
+    --      OUT_ESTADO := 2;
+  END P_OPE_DATA_EXCEL;
+
+  PROCEDURE P_OPE_DATA_EXCEL(V_OPCION           VARCHAR2,
+                             V_DATO             VARCHAR2,
+                             V_METODO           VARCHAR2,
+                             V_REGISTRO         VARCHAR2,
+                             V_COD_LABORATORIO  VARCHAR2,
+                             V_COD_ESTUDIO_LABO VARCHAR2,
+                             V_COD_SUB_PROY     VARCHAR2,
+                             OUT_ESTADO         OUT NUMBER,
+                             OUT_MENSAJE        OUT VARCHAR2,
+                             OUT_RETVAL         OUT NUMBER) IS
+    v_orden    number;
+    v_objectid number;
+    v_cd_mtra  varchar2(40);
+    v_elemento varchar2(50);
+    v_valor    varchar2(50);
+    v_tipo     varchar2(50);
+    v_unidad   varchar2(50);
+    v_simbolo  varchar2(50);
+    fila       number(6);
+    v_existe   number(4);
+  BEGIN
+    if V_METODO = '0' then
+      --Elemento
+      v_tipo := 1;
+    elsIF V_METODO = '1' then
+      v_tipo := 3;
+    end if;
+  
+    out_estado  := 0;
+    out_mensaje := null;
+    out_retval  := 0;
+    v_existe    := 0;
+    -- insert into x values (v_dato, 1, sysdate);
+    if v_opcion = 'INS' THEN
+      fila := 1;
+      for r in (select *
+                  from table(pack_dba_bdgeo_utils.f_split(v_dato, '|'))) loop
+      
+        ---Caso que exista el registro no lo graba
+        select count(*)
+          into v_existe
+          from DATA_EDIT.TB_RM_05_LABORATORIO
+         where upper(cd_mtra) =
+               upper(regexp_substr(r.column_value, '[^,]+', 1, 2))
+           AND METODO = V_METODO
+           and cd_sub_proy = V_COD_SUB_PROY;
+        if v_existe > 0 then
+          return;
+        end if;
+      
+        if fila = 1 then
+          v_cd_mtra := regexp_substr(r.column_value, '[^,]+', 1, 2);
+        else
+          -- insert into x
+          -- values
+          --   ('Elemento: ' || regexp_substr(r.column_value, '[^,]+', 1),
+          --    ' Valor: ' || regexp_substr(r.column_value, '[^,]+', 1, 2),
+          --   sysdate);
+          -- commit;
+        
+          v_elemento := regexp_substr(r.column_value, '[^,]+', 1);
+          v_valor    := regexp_substr(r.column_value, '[^,]+', 1, 2);
+          if v_valor = 'NaN' then
+            v_valor := 0;
+          end if;
+        
+          v_unidad := regexp_substr(r.column_value, '[^,]+', 1, 3);
+          --insert into x values(v_cd_mtra || ', ' || v_elemento || ',' || v_valor || ',' || v_unidad, 1, sysdate);
+        
+          -- insert into x
+          -- values
+          --   (r.column_value, v_valor || ' - ' || v_unidad, sysdate);
+          -- COMMIT;
+          select nvl(max(objectid) + 1, 1)
+            into v_objectid
+            from DATA_EDIT.TB_RM_05_LABORATORIO;
+        
+          select nvl(max(orden) + 1, 1)
+            into v_orden
+            from DATA_EDIT.TB_RM_05_LABORATORIO
+           where cd_mtra = v_cd_mtra;
+        
+          --if v_elemento is not null then
+          if v_valor != '0' then
+          
+            -- insert into x values (v_valor,v_valor, sysdate);
+            -- commit;
+          
+            insert into DATA_EDIT.TB_RM_05_LABORATORIO
+              (OBJECTID,
+               CD_MTRA,
+               TIPO,
+               ELEMENTO,
+               UNIDAD,
+               SIMBOLO,
+               VALOR,
+               ORDEN,
+               --HISTORIAL,
+               CREATIONDATE,
+               CREATOR,
+               METODO,
+               cd_laboratorio,
+               cd_estudio_labo,
+               CD_SUB_PROY,
+               GLOBALID)
+            values
+              (v_objectid,
+               v_cd_mtra,
+               v_tipo,
+               v_elemento,
+               v_unidad,
+               --v_simbolo,
+               --translate(v_valor, 'T .0123456789', 'T'),
+               (select decode(codigo, null, null, codigo)
+                  from ged_m_lista
+                 where tipo = '04_DC_APROXIMACION'
+                   and descripcion =
+                       translate(v_valor, 'T .0123456789', 'T')),
+               
+               --decode(v_valor, null, null,round(to_number(replace(v_valor, '.', ',')), 2)),
+               
+               DECODE(DECODE(translate(v_valor, 'T ><', 'T'),
+                             NULL,
+                             NULL,
+                             TO_NUMBER(REPLACE(translate(v_valor,
+                                                         'T ><',
+                                                         'T'),
+                                               '.',
+                                               ','))),
+                      NULL,
+                      NULL,
+                      ROUND(TO_NUMBER(REPLACE(DECODE(translate(v_valor,
+                                                               'T ><',
+                                                               'T'),
+                                                     NULL,
+                                                     NULL,
+                                                     TO_NUMBER(REPLACE(translate(v_valor,
+                                                                                 'T ><',
+                                                                                 'T'),
+                                                                       '.',
+                                                                       ','))),
+                                              '.',
+                                              ',')),
+                            2)),
+               v_orden,
+               --'A',
+               sysdate,
+               v_registro,
+               DECODE(V_METODO, 0, 'ELEMENTO', '1', 'ÓXIDOS'),
+               V_COD_LABORATORIO,
+               V_COD_ESTUDIO_LABO,
+               V_COD_SUB_PROY,
+               sde.version_user_ddl.retrieve_guid);
+            OUT_ESTADO := 1;
+            OUT_RETVAL := V_OBJECTID;
+          end if;
+        end if;
+        fila := fila + 1;
+      
+        --Actualizar tabla data_edit.gpt_rm_roca_mena
+        UPDATE DATA_EDIT.GPT_RM_ROCA_MENA RM
+           SET RM.ANALISIS_LABORATORIO =
+               (SELECT PACK_DBA_BDGEO_ROCA_MENA.F_ESTUDIOS_LABORATORIO(RM.CD_MTRA,
+                                                                       RM.SUB_PROY)
+                  FROM DATA_EDIT.GPT_RM_ROCA_MENA RM
+                 WHERE RM.CD_MTRA = V_CD_MTRA
+                   AND RM.SUB_PROY = V_COD_SUB_PROY)
+         WHERE CD_MTRA = V_CD_MTRA
+           AND SUB_PROY = V_COD_SUB_PROY;
+      
+      end loop;
+    
+      COMMIT;
+    END IF;
+  
+    -- EXCEPTION
+    --   WHEN OTHERS THEN
+    --    OUT_RETVAL := 0;
+    --    OUT_ESTADO := 2;
+  END P_OPE_DATA_EXCEL;
+
+  PROCEDURE P_VALIDAR_DATA_GEOQUIMICA(V_CD_MTRA   VARCHAR2,
+                                      V_METODO    VARCHAR2,
+                                      OUT_ESTADO  OUT NUMBER,
+                                      OUT_MENSAJE OUT VARCHAR2,
+                                      OUT_RETVAL  OUT NUMBER) IS
+    V_REGISTRO NUMBER(4);
+    V_Existe   NUMBER(5);
+  
+  BEGIN
+    OUT_ESTADO  := 0;
+    OUT_RETVAL  := 0;
+    OUT_MENSAJE := NULL;
+  
+    SELECT COUNT(*)
+      INTO V_REGISTRO
+      FROM DATA_EDIT.GPT_RM_ROCA_MENA RM
+     WHERE RM.CD_MTRA = V_CD_MTRA;
+  
+    IF V_REGISTRO > 0 THEN
+      SELECT COUNT(1)
+        INTO V_Existe
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO
+       WHERE UPPER(CD_MTRA) = UPPER(V_CD_MTRA)
+         AND CD_ESTUDIO_LABO = V_METODO;
+    
+      IF V_Existe > 0 THEN
+        OUT_ESTADO  := 1;
+        OUT_MENSAJE := 'EXISTE';
+        OUT_RETVAL  := 1;
+      
+      ELSIF V_Existe = 0 THEN
+        OUT_ESTADO  := 0;
+        OUT_MENSAJE := 'LIBRE';
+        OUT_RETVAL  := 0;
+      
+      END IF;
+    ELSE
+      OUT_ESTADO  := -1;
+      OUT_MENSAJE := 'NO EXISTE';
+      OUT_RETVAL  := 0;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE_APPLICATION_ERROR(-20000, SQLERRM);
+      OUT_ESTADO  := 2;
+      OUT_MENSAJE := SQLERRM;
+      ROLLBACK;
+  END P_VALIDAR_DATA_GEOQUIMICA;
+
+  PROCEDURE P_VALIDAR_DATA_GEOQUIMICA(V_CD_MTRA          VARCHAR2,
+                                      V_COD_INT_PROYECTO VARCHAR2,
+                                      V_METODO           VARCHAR2,
+                                      OUT_ESTADO         OUT NUMBER,
+                                      OUT_MENSAJE        OUT VARCHAR2,
+                                      OUT_RETVAL         OUT NUMBER) IS
+    V_REGISTRO NUMBER(4);
+    V_Existe   NUMBER(5);
+  
+  BEGIN
+    OUT_ESTADO  := 0;
+    OUT_RETVAL  := 0;
+    OUT_MENSAJE := NULL;
+  
+    SELECT COUNT(*)
+      INTO V_REGISTRO
+      FROM DATA_EDIT.GPT_RM_ROCA_MENA RM
+     WHERE RM.CD_MTRA = V_CD_MTRA
+       AND PROY =
+           (SELECT CODIGO_PROYECTO
+              FROM BDT_M_PROYECTO P
+             WHERE P.CODIGO_INTERNO_PROYECTO = V_COD_INT_PROYECTO);
+  
+    IF V_REGISTRO > 0 THEN
+      SELECT COUNT(1)
+        INTO V_Existe
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO
+       WHERE UPPER(CD_MTRA) = UPPER(V_CD_MTRA)
+         AND CD_ESTUDIO_LABO = V_METODO;
+    
+      IF V_Existe > 0 THEN
+        OUT_ESTADO  := 1;
+        OUT_MENSAJE := 'EXISTE';
+        OUT_RETVAL  := 1;
+      
+      ELSIF V_Existe = 0 THEN
+        OUT_ESTADO  := 0;
+        OUT_MENSAJE := 'LIBRE';
+        OUT_RETVAL  := 0;
+      
+      END IF;
+    ELSE
+      OUT_ESTADO  := -1;
+      OUT_MENSAJE := 'NO EXISTE';
+      OUT_RETVAL  := 0;
+    END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      RAISE_APPLICATION_ERROR(-20000, SQLERRM);
+      OUT_ESTADO  := 2;
+      OUT_MENSAJE := SQLERRM;
+      ROLLBACK;
+  END P_VALIDAR_DATA_GEOQUIMICA;
+
+  PROCEDURE P_LISTAR_ROCASYMENAS_TOTAL1(IN_CODMUESTRA varchar2,
+                                        IN_NOMMUESTRA varchar2,
+                                        IN_REGION     varchar2,
+                                        IN_PROVINCIA  varchar2,
+                                        IN_DISTRITO   varchar2,
+                                        IN_CODINTPROY varchar2,
+                                        OUT_CURSOR    OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    v_error := null;
+    open out_cursor for
+      SELECT *
+        FROM (SELECT ROW_NUMBER() OVER(ORDER BY RM.OBJECTID) RN,
+                     RM.OBJECTID,
+                     '' CD_DIR,
+                     RM.PROY,
+                     PACK_DBA_BDGEO_UTILS.F_SEL_DOMINIOS_DETALLE('DC_MODULO04',
+                                                                 RM.PROY) PROYECTO,
+                     RM.SUB_PROY CD_SUBPROY,
+                     PACK_DBA_BDGEO_UTILS.F_SEL_DOMINIOS_DETALLE('DC_MODULOETAPA04',
+                                                                 RM.SUB_PROY) SUB_PROY,
+                     (SELECT INITCAP(NOMBRES_Y_APELLIDOS)
+                        FROM BDT_M_INTEGRANTE
+                       WHERE USUARIO = RM.COLECTADO) COLECTADO,
+                     RM.CD_MTRA,
+                     RM.A_ITS AREA_INTERES,
+                     TO_CHAR(RM.F_MTRA, 'DD/MM/YYYY') F_MTRA,
+                     TO_CHAR(RM.NORTE, '9999999.99') NORTE,
+                     TO_CHAR(RM.ESTE, '999999.99') ESTE,
+                     RM.ZONA,
+                     RM.DATUM,
+                     RM.LATITUD,
+                     RM.LONGITUD,
+                     RM.ALTITUD,
+                     INITCAP(B.NM_DEPA) REGION,
+                     INITCAP(B.NM_PROV) PROVINCIA,
+                     INITCAP(B.NM_DIST) DISTRITO
+                FROM DATA_EDIT.GPT_RM_ROCA_MENA RM --EVW
+               INNER JOIN DATA_GIS.GPO_DEP_DISTRITO B
+                  ON RM.DISTRITO = B.CD_DIST(+)
+               WHERE (IN_CODMUESTRA IS NULL OR
+                     UPPER(RM.CD_MTRA) LIKE UPPER(IN_CODMUESTRA) || '%')
+                 AND (IN_NOMMUESTRA IS NULL OR
+                     UPPER(RM.A_ITS) LIKE
+                     '%' || UPPER(IN_NOMMUESTRA) || '%')
+                 AND (IN_REGION IS NULL OR
+                     UPPER(B.NM_DEPA) LIKE UPPER(IN_REGION) || '%')
+                 AND (IN_PROVINCIA IS NULL OR
+                     UPPER(B.NM_PROV) LIKE UPPER(IN_PROVINCIA) || '%')
+                 AND (IN_DISTRITO IS NULL OR
+                     UPPER(B.NM_DIST) LIKE UPPER(IN_DISTRITO) || '%')
+                 AND PROY =
+                     (SELECT CODIGO_PROYECTO
+                        FROM BDT_M_PROYECTO
+                       WHERE CODIGO_INTERNO_PROYECTO = IN_CODINTPROY));
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_LISTAR_ROCASYMENAS_TOTAL1;
+
+  -- *************************************************************************************
+  -- Modulo:BDGeocientifica  
+  -- Autor: .
+
+  -- ***************************************************************************************
+  FUNCTION F_SUBTIPO_YACIMIENTO(CodigoMuestra VARCHAR2) RETURN varchar2 IS
+    v_cadena varchar2(1000);
+  BEGIN
+    for r in (select descripcion
+                from ged_m_lista
+               where tipo = 'BDT_YM_SUBTIPO_DEPOSITO'
+                 and codigo in
+                     (select subtipo_deposito
+                        from bdt_d_depositos_ym y
+                       where y.codigo_interno_muestra = CodigoMuestra)) loop
+      v_Cadena := v_Cadena || r.descripcion || ' /';
+    end loop;
+    v_Cadena := substr(v_cadena, 1, length(v_cadena) - 1);
+    ---  dbms_output.put_line(v_cadena);
+    return v_cadena;
+  END F_SUBTIPO_YACIMIENTO;
+
+  FUNCTION F_Cabecera_Excel(pCodMuestra VARCHAR2) RETURN varchar2 IS
+    cadena varchar2(3000);
+  BEGIN
+    for r in (select elemento
+                from DATA_EDIT.TB_RM_05_LABORATORIO r
+               where cd_mtra = pCodMuestra
+               order by orden) loop
+      cadena := cadena || chr(39) || r.elemento || chr(39) || ',';
+    end loop;
+    cadena := substr(cadena, 1, length(cadena) - 1);
+    return cadena;
+  
+  END F_Cabecera_Excel;
+
+  -- *************************************************************************************
+  -- Autor: .
+
+  -- ***************************************************************************************
+  FUNCTION F_NOMBRE_CARACT_MINERAL(pCodMuestra VARCHAR2, pTipo number)
+    RETURN varchar2 IS
+    v_cadena varchar2(1000);
+  BEGIN
+    FOR R IN (SELECT GL.DESCRIPCION MINERAL, GL.ORDEN
+                FROM data_edit.tb_rome_02_mineral RC
+               INNER JOIN GED_M_LISTA GL
+                  ON GL.CODIGO = RC.MINERAL
+                 AND TIPO = UPPER('04_DC_Mineral')
+                 AND RC.CD_MTRA = pCodMuestra
+                 AND RC.T_MINERAL = pTipo
+               ORDER BY ORDEN) LOOP
+      v_cadena := v_cadena || R.MINERAL || ' / ';
+    END LOOP;
+    v_cadena := substr(v_cadena, 1, length(v_cadena) - 2);
+    ---  dbms_output.put_line(v_cadena);
+    return v_cadena;
+  
+  END F_NOMBRE_CARACT_MINERAL;
+
+  FUNCTION F_NOMBRE_ST_YACIMIENTO(pCodMuestra VARCHAR2) RETURN varchar2 IS
+    v_cadena varchar2(500);
+  BEGIN
+    FOR R IN (SELECT substr(descripcion, instr(descripcion, '|') + 1) subtipo
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_DC_YACSUBTIPO'
+                 AND CODIGO in (select ST_DEPOSITO
+                                  from data_edit.tb_rome_01_deposito
+                                 where CD_MTRA = pCodMuestra)) loop
+      v_cadena := v_cadena || r.subtipo || ' / ';
+    end loop;
+    v_cadena := substr(v_cadena, 1, length(v_cadena) - 2);
+    ---  dbms_output.put_line(v_cadena);
+    return v_cadena;
+  
+  END F_NOMBRE_ST_YACIMIENTO;
+
+  FUNCTION F_NOMBRE_ANALISIS(pCodMuestra VARCHAR2, pTipo number)
+    RETURN varchar2 IS
+    v_cadena varchar2(500);
+  BEGIN
+    for r in (select codigo
+                from ged_m_lista
+               where tipo = '04_DC_ANALISIS'
+                 and codigo in (select analisis
+                                  from data_edit.tb_rome_05_analisis
+                                 where tipo = pTipo
+                                   and CD_MTRA = pCodMuestra)) loop
+      v_cadena := v_cadena || r.codigo || ' / ';
+    end loop;
+    v_cadena := substr(v_cadena, 1, length(v_cadena) - 2);
+    return v_cadena;
+  
+  END F_NOMBRE_ANALISIS;
+
+  FUNCTION F_Nom_Estilo_Alteracion(pCodMuestra VARCHAR2, pObjectID number)
+    RETURN varchar2 IS
+    e_alteracion varchar2(200);
+    v_cadena     varchar2(200);
+    v_nombre     varchar2(200);
+  BEGIN
+  
+    --INSERT INTO X VALUES (pCodMuestra,pObjectID, SYSDATE);
+    --COMMIT;
+  
+    select e_alteracion
+      into e_alteracion
+      from DATA_EDIT.TB_RM_CARACTMIN_ALTER
+     where upper(cd_mtra) = upper(pCodMuestra)
+       and objectid = pObjectID;
+    for r in (select *
+                from table(pack_dba_bdgeo_utils.f_split(e_alteracion, ','))) loop
+      select descripcion
+        into v_nombre
+        from ged_m_lista
+       where tipo = '04_DC_ESTILO_ALTERACION'
+         and codigo = r.column_value;
+      v_cadena := v_cadena || v_nombre || ', ';
+      dbms_output.put_line(r.column_value);
+    end loop;
+    v_cadena := substr(v_cadena, 1, length(v_cadena) - 2);
+    return v_cadena;
+  
+  END F_Nom_Estilo_Alteracion;
+
+  FUNCTION F_NOMBRE_ESTRUCTURA(pCodMuestra VARCHAR2) RETURN varchar2 IS
+    v_cadena varchar2(600);
+  BEGIN
+    for r in (select (select descripcion
+                        from ged_m_lista
+                       where tipo = '04_DC_TIPO_ESTRUCTURA'
+                         and codigo = e.tipo) tipo,
+                     (select descripcion
+                        from ged_m_lista
+                       where tipo = '04_DC_SUBTIPO_ESTRUCTURA'
+                         and codigo = e.subtipo) subtipo,
+                     decode(e.azimut, null, '', e.azimut || '°') azimut,
+                     decode(e.rumbo, null, '', e.rumbo || '°' || e.d_rumbo) rumbo,
+                     decode(e.buzamiento,
+                            null,
+                            '',
+                            e.buzamiento || '°' || e.d_buzamiento) buzamiento,
+                     decode(e.pitch, null, '', e.pitch || '°' || e.d_pitch) pitch,
+                     decode(e.plunge,
+                            null,
+                            '',
+                            e.plunge || '°' || e.d_plunge) plunge
+                from data_edit.tb_rome_04_estructura e
+               where CD_MTRA = pCodMuestra) loop
+      if r.tipo is not null then
+        v_cadena := v_cadena || 'Tipo: ' || r.tipo || ', ';
+      end if;
+      if r.subtipo is not null then
+        v_cadena := v_cadena || 'Subtipo: ' || r.subtipo || ', ';
+      end if;
+      if r.azimut is not null then
+        v_cadena := v_cadena || 'Azimut: ' || r.azimut || ', ';
+      end if;
+      if r.rumbo is not null then
+        v_cadena := v_cadena || 'Rumbo: ' || r.rumbo || ', ';
+      end if;
+      if r.pitch is not null then
+        v_cadena := v_cadena || 'Pitch: ' || r.pitch || ', ';
+      end if;
+      if r.plunge is not null then
+        v_cadena := v_cadena || 'Plunge: ' || r.plunge || ', ';
+      end if;
+      v_cadena := v_cadena || chr(13);
+    end loop;
+    v_cadena := substr(v_cadena, 1, length(v_cadena) - 3);
+    return v_cadena;
+  
+  END F_NOMBRE_ESTRUCTURA;
+
+  PROCEDURE P_LISTAR_ROCASYMENAS_TOTAL(IN_CODMUESTRA varchar2,
+                                       IN_NOMMUESTRA varchar2,
+                                       IN_REGION     varchar2,
+                                       IN_PROVINCIA  varchar2,
+                                       IN_DISTRITO   varchar2,
+                                       IN_CODINTPROY varchar2,
+                                       OUT_CURSOR    OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    v_error := null;
+    open out_cursor for
+      SELECT *
+        FROM (SELECT ROW_NUMBER() OVER(ORDER BY RM.OBJECTID) RN,
+                     RM.OBJECTID,
+                     RM.DIR CD_DIR,
+                     RM.PROY,
+                     PACK_DBA_BDGEO_UTILS.F_SEL_DOMINIOS_DETALLE('DC_MODULO04',
+                                                                 RM.PROY) PROYECTO,
+                     RM.SUB_PROY CD_SUBPROY,
+                     PACK_DBA_BDGEO_UTILS.F_SEL_DOMINIOS_DETALLE('DC_MODULOETAPA04',
+                                                                 RM.SUB_PROY) SUB_PROY,
+                     RM.CD_MTRA,
+                     RM.A_ITS AREA_INTERES,
+                     RM.CAT CATEGORIA,
+                     TO_CHAR(RM.ESTE, '999999.99') ESTE,
+                     TO_CHAR(RM.NORTE, '9999999.99') NORTE,
+                     RM.ZONA,
+                     RM.DATUM,
+                     TO_CHAR(RM.ALTITUD, '99999') ALTITUD,
+                     RM.LONGITUD,
+                     RM.LATITUD,
+                     RM.HOJA,
+                     TO_CHAR(RM.F_MTRA, 'DD/MM/YYYY') F_MTRA,
+                     (SELECT INITCAP(NOMBRES_Y_APELLIDOS)
+                        FROM BDT_M_INTEGRANTE
+                       WHERE USUARIO = RM.COLECTADO
+                         AND ROWNUM = 1) COLECTADO,
+                     INITCAP(B.NM_DEPA) REGION,
+                     INITCAP(B.NM_PROV) PROVINCIA,
+                     INITCAP(B.NM_DIST) DISTRITO,
+                     RM.EST_MN ESTADO_ACTUAL,
+                     RM.GEOMETRIA,
+                     RM.ANCHO C_ANCHO,
+                     RM.LONGT C_LONGITUD,
+                     PACK_DBA_BDGEO_ROCAS_Y_MENAS.F_NOMBRE_CARACT_MINERAL(RM.CD_MTRA,
+                                                                          1) MENA,
+                     PACK_DBA_BDGEO_ROCAS_Y_MENAS.F_NOMBRE_CARACT_MINERAL(RM.CD_MTRA,
+                                                                          2) GANGA,
+                     (SELECT DESCRIPCION
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_RH_TIPO'
+                         AND CODIGO = RM.T_ROCA) TIPO_ROCA,
+                     (SELECT DESCRIPCION
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_RH_SUBTIPO'
+                         AND CODIGO = RM.ST_ROCA) SUBTIPO_ROCA,
+                     (SELECT DESCRIPCION
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_RH_ROCA'
+                         AND CODIGO = RM.ROCA_MINERAL) ROCA,
+                     RM.TEXTURA,
+                     RM.U_LITOESTRATIGRAFICA,
+                     (SELECT SUBSTR(DESCRIPCION, INSTR(DESCRIPCION, '|') + 1)
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_DC_YACTIPO'
+                         AND CODIGO = (SELECT DEPOSITO
+                                         FROM DATA_EDIT.TB_ROME_01_DEPOSITO
+                                        WHERE CD_MTRA = RM.CD_MTRA
+                                          AND ROWNUM = 1)) TIPO_DEPOSITO,
+                     PACK_DBA_BDGEO_ROCAS_Y_MENAS.F_NOMBRE_ST_YACIMIENTO(RM.CD_MTRA) ST_YACIMIENTO,
+                     RM.ACT_PRD PRODUCCION,
+                     (SELECT DESCRIPCION
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_DC_MINAESCALA'
+                         AND CODIGO = RM.ACT_SC_PRD) ESCALAPROD,
+                     RM.ACT_RR_RSV RECURSOS,
+                     RM.ACT_DATO DATOEMPRESA,
+                     (SELECT DESCRIPCION
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_DC_MUESTRA'
+                         AND CODIGO = RM.T_MTRA) T_MTRA,
+                     RM.DSCP_MTRA DESC_MUESTRA,
+                     (SELECT DESCRIPCION
+                        FROM GED_M_LISTA
+                       WHERE TIPO = '04_DC_MUESTREO'
+                         AND CODIGO = RM.T_MTRO) T_MTREO,
+                     RM.DSCP_MTRO DESC_MUESTREO,
+                     PACK_DBA_BDGEO_ROCAS_Y_MENAS.F_NOMBRE_ESTRUCTURA(RM.CD_MTRA) ESTRUCTURA,
+                     PACK_DBA_BDGEO_ROCAS_Y_MENAS.F_NOMBRE_ANALISIS(RM.CD_MTRA,
+                                                                    1) ANA_GEOQUIMICO,
+                     PACK_DBA_BDGEO_ROCAS_Y_MENAS.F_NOMBRE_ANALISIS(RM.CD_MTRA,
+                                                                    1) ANA_PETROMINERAL,
+                     PACK_DBA_BDGEO_ROCAS_Y_MENAS.F_NOMBRE_ANALISIS(RM.CD_MTRA,
+                                                                    1) ANA_OTROS_ANALISIS,
+                     PACK_DBA_BDGEO_ROCA_MENA.F_NOMBRE_ANALISIS(RM.CD_MTRA,
+                                                                1) ANA_ESTUDIOS_ESPEC
+              
+                FROM DATA_EDIT.GPT_ROME_ROCAMENA RM --EVW
+               INNER JOIN DATA_GIS.GPO_DEP_DISTRITO B
+                  ON RM.DISTRITO = B.CD_DIST(+)
+               WHERE (IN_CODMUESTRA IS NULL OR
+                     UPPER(RM.CD_MTRA) LIKE UPPER(IN_CODMUESTRA) || '%')
+                 AND (IN_NOMMUESTRA IS NULL OR
+                     UPPER(RM.A_ITS) LIKE
+                     '%' || UPPER(IN_NOMMUESTRA) || '%')
+                 AND (IN_REGION IS NULL OR
+                     UPPER(B.NM_DEPA) LIKE UPPER(IN_REGION) || '%')
+                 AND (IN_PROVINCIA IS NULL OR
+                     UPPER(B.NM_PROV) LIKE UPPER(IN_PROVINCIA) || '%')
+                 AND (IN_DISTRITO IS NULL OR
+                     UPPER(B.NM_DIST) LIKE UPPER(IN_DISTRITO) || '%')
+                 AND PROY =
+                     (SELECT CODIGO_PROYECTO
+                        FROM BDT_M_PROYECTO
+                       WHERE CODIGO_INTERNO_PROYECTO = IN_CODINTPROY));
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_LISTAR_ROCASYMENAS_TOTAL;
+
+  /*
+  dir      'DRME',
+  proy     'GE-28',
+  sub_proy 'GE-28|Huisani'
+  Cod_int_proy_DK: 396
+  */
+
+  PROCEDURE P_OPE_MIGRAR_DATA_DK(pDir        varchar2,
+                                 pProy       varchar2,
+                                 pSubProy    varchar2,
+                                 pCodIntProy number,
+                                 OUT_MENSAJE OUT VARCHAR2) IS
+    pOID           number(5);
+    pOID01         number(5);
+    pOID02         number(5);
+    pOID03         number(5);
+    pOID04         number(5);
+    pOID05         number(5);
+    pOID06         number(5);
+    vCodigoMuestra varchar2(20);
+  BEGIN
+    for r in (SELECT (select codigo_proyecto
+                        from bdt_m_proyecto
+                       where codigo_interno_proyecto =
+                             m.codigo_interno_proyecto) cod_proy,
+                     (select descripcion
+                        from bdt_m_proyecto
+                       where codigo_interno_proyecto =
+                             m.codigo_interno_proyecto) nom_proy,
+                     m.codigo_interno_muestra,
+                     M.CODIGO_MUESTRA,
+                     M.FECHA_MUESTRA,
+                     (select usuario
+                        from bdt_m_integrante
+                       where codigo_integrante = M.GEOLOGO) geologo,
+                     M.CODIGO_CATEGORIA,
+                     M.OTRA_CATEGORIA,
+                     M.NOMBRE_AREA,
+                     M.CODIGO_ESTADO_ACTUAL,
+                     C.NORTE,
+                     C.ESTE,
+                     C.SC_DATUM,
+                     C.ZONA,
+                     C.ALTITUD,
+                     M.CODIGO_HOJA,
+                     C.LATITUD,
+                     C.LONGITUD,
+                     decode(C.CODIGO_UBIGEO,
+                            null,
+                            SUBSTR(M.CODIGO_UBIGEO, 1, 2),
+                            substr(c.codigo_ubigeo, 1, 2)) region,
+                     decode(C.CODIGO_UBIGEO,
+                            null,
+                            SUBSTR(M.CODIGO_UBIGEO, 1, 4),
+                            substr(c.codigo_ubigeo, 1, 4)) provincia,
+                     decode(C.CODIGO_UBIGEO,
+                            null,
+                            SUBSTR(M.CODIGO_UBIGEO, 1, 6),
+                            substr(c.codigo_ubigeo, 1, 6)) distrito,
+                     mi.textura_roca,
+                     mi.cod_roca_tipo_hosp,
+                     mi.cod_roca_subtipo_hosp,
+                     mi.cod_roca_encaj_hosp,
+                     mi.geometria,
+                     AM.PRODUCCION,
+                     AM.CODIGO_ESCALA_PROD,
+                     AM.RECURSOS,
+                     AM.DATOS_EMPRESA,
+                     tm.codigo_tipo_muestra,
+                     tm.descripcion_muestra,
+                     tm.codigo_tipo_muestreo,
+                     tm.descripcion_muestreo
+                FROM BDGRMS_D_ROCA_MENA M
+               INNER JOIN BDT_D_COORDENADAS C
+                  ON C.CODIGO_INTERNO_MUESTRA = M.CODIGO_INTERNO_MUESTRA
+                left join BDGRMS_D_MINERALIZACION MI
+                  on mi.codigo_interno_muestra = m.codigo_interno_muestra
+                left join BDGRMS_D_ACTIVIDAD_MINERA am
+                  on am.codigo_interno_muestra = m.codigo_interno_muestra
+                left join BDGRMS_D_TIPO_MUESTRA tm
+                  on tm.codigo_interno_muestra = m.codigo_interno_muestra
+               where m.codigo_interno_proyecto = pCodIntProy) loop
+      -- where m.codigo_muestra = 'prueba') loop
+      vCodigoMuestra := r.codigo_muestra;
+      SELECT NVL(MAX(objectid) + 1, 1)
+        INTO pOID
+        FROM DATA_EDIT.GPT_ROME_RocaMena;
+    
+      insert into data_edit.gpt_rome_rocamena
+        (objectid,
+         dir,
+         proy,
+         sub_proy,
+         responsable,
+         colectado,
+         estudiado,
+         cd_mtra,
+         f_mtra,
+         norte,
+         este,
+         zona,
+         datum,
+         latitud,
+         longitud,
+         altitud,
+         region,
+         provincia,
+         distrito,
+         hoja,
+         a_its,
+         est_mn,
+         cat,
+         otr_cat,
+         geometria, --ancho, longt, 
+         txtu_r_caja,
+         --txtu_mnlz, 
+         t_roca,
+         st_roca, --ctrl_ltg, ctrl_estr, azimut, rumbo, d_rumbo, buzamiento, d_buz, ctrl_cmt, 
+         act_prd,
+         act_sc_prd,
+         act_rr_rsv,
+         act_dato,
+         t_mtra,
+         otr_mtra,
+         dscp_mtra,
+         t_mtro,
+         otr_mtro,
+         dscp_mtro,
+         registro, -- bibliografia, 
+         historial,
+         f_registro,
+         registrado,
+         -- f_cambio, cambiado, control, 
+         globalid,
+         roca_mineral,
+         --textura, u_litoestratigrafica, estilo_alt, estilo_min, 
+         shape)
+      values
+        (pOID,
+         pDir,
+         pProy,
+         pSubProy,
+         null,
+         r.geologo,
+         null,
+         R.CODIGO_MUESTRA,
+         R.FECHA_MUESTRA,
+         R.NORTE,
+         R.ESTE,
+         R.ZONA,
+         '84',
+         R.LATITUD,
+         R.LONGITUD,
+         R.ALTITUD,
+         R.REGION,
+         R.PROVINCIA,
+         R.DISTRITO,
+         R.CODIGO_HOJA,
+         R.NOMBRE_AREA,
+         R.CODIGO_ESTADO_ACTUAL,
+         R.CODIGO_CATEGORIA,
+         R.OTRA_CATEGORIA,
+         r.geometria,
+         --v_ancho, v_longt, 
+         r.textura_roca,
+         --v_txtu_mnlz, 
+         r.cod_roca_tipo_hosp,
+         r.cod_roca_tipo_hosp || '|' || r.cod_roca_subtipo_hosp, --v_ctrl_ltg, v_ctrl_estr, v_azimut, v_rumbo, v_d_rumbo, v_buzamiento, v_d_buz, v_ctrl_cmt, 
+         R.PRODUCCION,
+         R.CODIGO_ESCALA_PROD,
+         R.RECURSOS,
+         R.DATOS_EMPRESA,
+         R.CODIGO_TIPO_MUESTRA,
+         NULL,
+         R.DESCRIPCION_MUESTRA,
+         R.CODIGO_TIPO_MUESTREO,
+         NULL,
+         R.DESCRIPCION_MUESTREO,
+         'Revision', --v_bibliografia,
+         'A',
+         SYSDATE,
+         R.GEOLOGO,
+         ---v_f_cambio, v_cambiado, v_control,
+         sde.version_user_ddl.retrieve_guid,
+         r.cod_roca_tipo_hosp || '|' || r.cod_roca_subtipo_hosp || '|' ||
+         r.cod_roca_encaj_hosp, -- v_textura, v_u_litoestratigrafica, v_estilo_alt, v_estilo_min, 
+         sde.st_point('point (' || replace(pack_dba_gis.F_UTM_GEO_WGS84(DECODE(R.ESTE,
+                                                                               NULL,
+                                                                               NULL,
+                                                                               TO_NUMBER(REPLACE(R.ESTE,
+                                                                                                 '.',
+                                                                                                 ','))),
+                                                                        DECODE(R.NORTE,
+                                                                               NULL,
+                                                                               NULL,
+                                                                               TO_NUMBER(REPLACE(R.NORTE,
+                                                                                                 '.',
+                                                                                                 ','))),
+                                                                        substr(R.ZONA,
+                                                                               1,
+                                                                               2),
+                                                                        4326,
+                                                                        'minx'),
+                                           ',',
+                                           '.') || ' ' ||
+                      replace(pack_dba_gis.F_UTM_GEO_WGS84(DECODE(R.ESTE,
+                                                                  NULL,
+                                                                  NULL,
+                                                                  TO_NUMBER(REPLACE(R.ESTE,
+                                                                                    '.',
+                                                                                    ','))),
+                                                           DECODE(R.NORTE,
+                                                                  NULL,
+                                                                  NULL,
+                                                                  TO_NUMBER(REPLACE(R.NORTE,
+                                                                                    '.',
+                                                                                    ','))),
+                                                           substr(R.ZONA,
+                                                                  1,
+                                                                  2),
+                                                           4326,
+                                                           'miny'),
+                              ',',
+                              '.') || ')',
+                      4326));
+    
+      ---Tipo Deposito----  
+      FOR S IN (SELECT *
+                  FROM BDGRMS_D_SUBTIPODEPOSITO
+                 WHERE CODIGO_INTERNO_MUESTRA = R.CODIGO_INTERNO_MUESTRA) LOOP
+        SELECT NVL(MAX(objectid) + 1, 1)
+          INTO pOID01
+          FROM DATA_EDIT.TB_ROME_01_DEPOSITO;
+        INSERT INTO DATA_EDIT.TB_ROME_01_DEPOSITO
+          (OBJECTID,
+           CD_MTRA,
+           DEPOSITO,
+           ST_DEPOSITO,
+           ORDEN,
+           F_REGISTRO,
+           REGISTRADO,
+           GLOBALID)
+        VALUES
+          (pOID01,
+           R.CODIGO_MUESTRA,
+           regexp_replace(S.CODIGO_SUBTIPODEPOSITO, '[0-9]'),
+           regexp_replace(S.CODIGO_SUBTIPODEPOSITO, '[0-9]') || '|' ||
+           regexp_replace(S.CODIGO_SUBTIPODEPOSITO, '[A-Z]'),
+           S.ORDEN,
+           SYSDATE,
+           R.GEOLOGO,
+           sde.version_user_ddl.retrieve_guid);
+      END LOOP;
+    
+      ---------------------------------Alteración-------------------------------------
+      FOR T IN (SELECT A.COD_ALTERACION,
+                       A.COD_INTENSIDAD_ALTERACION,
+                       A.COD_GRUPO_ALTERACION,
+                       A.COD_MINERAL_ALTERACION,
+                       A.ORDEN
+                  FROM BDGRMS_D_ASOCIA_MIN_ALT A
+                 WHERE CODIGO_INTERNO_MUESTRA = R.CODIGO_INTERNO_MUESTRA) LOOP
+        SELECT NVL(MAX(OBJECTID) + 1, 1)
+          INTO POID02
+          FROM DATA_EDIT.TB_ROME_03_ALTERACION;
+        INSERT INTO DATA_EDIT.TB_ROME_03_ALTERACION
+          (OBJECTID,
+           CD_MTRA,
+           ALTERACION,
+           GRUPO_ALTR,
+           INTENSIDAD,
+           MINERAL,
+           ORDEN,
+           F_REGISTRO,
+           REGISTRADO,
+           GLOBALID)
+        VALUES
+          (POID02,
+           R.CODIGO_MUESTRA,
+           T.COD_ALTERACION,
+           T.COD_GRUPO_ALTERACION,
+           T.COD_INTENSIDAD_ALTERACION, ----- XXXXXXXXX
+           T.COD_MINERAL_ALTERACION,
+           T.ORDEN,
+           SYSDATE,
+           R.GEOLOGO,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID);
+      END LOOP;
+      ----------MENA-----------------------      
+      for u in (SELECT *
+                  FROM BDGRMS_D_MENA
+                 WHERE CODIGO_INTERNO_MUESTRA = R.CODIGO_INTERNO_MUESTRA) loop
+        SELECT NVL(MAX(OBJECTID) + 1, 1)
+          INTO POID03
+          FROM DATA_EDIT.tb_rome_02_mineral;
+        insert into data_edit.tb_rome_02_mineral
+          (OBJECTID,
+           CD_MTRA,
+           T_MINERAL,
+           MINERAL,
+           ORDEN,
+           F_REGISTRO,
+           REGISTRADO,
+           GLOBALID)
+        values
+          (POID03,
+           R.CODIGO_MUESTRA,
+           1,
+           u.codigo_mena,
+           u.orden,
+           sysdate,
+           R.GEOLOGO,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID);
+      end loop;
+      ----------GANGA-----------------------      
+      for v in (SELECT *
+                  FROM BDGRMS_D_GANGA
+                 WHERE CODIGO_INTERNO_MUESTRA = R.CODIGO_INTERNO_MUESTRA) loop
+        SELECT NVL(MAX(OBJECTID) + 1, 1)
+          INTO POID03
+          FROM DATA_EDIT.tb_rome_02_mineral;
+        insert into data_edit.tb_rome_02_mineral
+          (OBJECTID,
+           CD_MTRA,
+           T_MINERAL,
+           MINERAL,
+           ORDEN,
+           F_REGISTRO,
+           REGISTRADO,
+           GLOBALID)
+        values
+          (POID03,
+           R.CODIGO_MUESTRA,
+           2,
+           v.codigo_ganga,
+           v.orden,
+           sysdate,
+           R.GEOLOGO,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID);
+      end loop;
+    
+      ------Analsis Geoquimicos--------------------
+      for x in (SELECT *
+                  FROM BDGRMS_D_A_GEOQUIMICO
+                 WHERE CODIGO_INTERNO_MUESTRA = R.CODIGO_INTERNO_MUESTRA) loop
+        SELECT NVL(MAX(OBJECTID) + 1, 1)
+          INTO POID04
+          FROM DATA_EDIT.tb_rome_05_analisis;
+        insert into data_edit.tb_rome_05_analisis
+          (OBJECTID,
+           CD_MTRA,
+           TIPO,
+           ANALISIS,
+           ORDEN,
+           F_REGISTRO,
+           REGISTRADO,
+           GLOBALID)
+        values
+          (POID04,
+           R.CODIGO_MUESTRA,
+           1,
+           X.CODIGO_AN_GEOQUIMICO,
+           X.ORDEN,
+           SYSDATE,
+           R.GEOLOGO,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID);
+      end loop;
+    
+      ------Analsis Petromineralógico--------------------
+      for y in (SELECT *
+                  FROM BDGRMS_D_AN_PETROMINERALOGICO
+                 WHERE CODIGO_INTERNO_MUESTRA = R.CODIGO_INTERNO_MUESTRA) loop
+        SELECT NVL(MAX(OBJECTID) + 1, 1)
+          INTO POID05
+          FROM DATA_EDIT.tb_rome_05_analisis;
+        insert into data_edit.tb_rome_05_analisis
+          (OBJECTID,
+           CD_MTRA,
+           TIPO,
+           ANALISIS,
+           ORDEN,
+           F_REGISTRO,
+           REGISTRADO,
+           GLOBALID)
+        values
+          (POID05,
+           R.CODIGO_MUESTRA,
+           2,
+           Y.CODIGO_AN_PETROMINERALOGICO,
+           Y.ORDEN,
+           SYSDATE,
+           R.GEOLOGO,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID);
+      end loop;
+    
+      ------Otros Analsisis--------------------
+      for y in (SELECT *
+                  FROM BDGRMS_D_AN_OTROS
+                 WHERE CODIGO_INTERNO_MUESTRA = R.CODIGO_INTERNO_MUESTRA) loop
+        SELECT NVL(MAX(OBJECTID) + 1, 1)
+          INTO POID06
+          FROM DATA_EDIT.tb_rome_05_analisis;
+        insert into data_edit.tb_rome_05_analisis
+          (OBJECTID,
+           CD_MTRA,
+           TIPO,
+           ANALISIS,
+           ORDEN,
+           F_REGISTRO,
+           REGISTRADO,
+           GLOBALID)
+        values
+          (POID06,
+           R.CODIGO_MUESTRA,
+           3,
+           Y.CODIGO_AN_OTROS,
+           Y.ORDEN,
+           SYSDATE,
+           R.GEOLOGO,
+           SDE.VERSION_USER_DDL.RETRIEVE_GUID);
+      end loop;
+    
+    END LOOP;
+  
+    --campo Categoria---
+    --update data_edit.gpt_rome_rocamena rm set cat = 'Proyecto' where cat = 'PROY' and cd_mtra = vCodigoMuestra;
+    --update data_edit.gpt_rome_rocamena rm set cat = 'Prospecto' where cat = 'PROS' and cd_mtra = vCodigoMuestra;
+    --update data_edit.gpt_rome_rocamena rm set cat = 'Yacimiento' where cat = 'YACI' and cd_mtra = vCodigoMuestra ;
+    --update data_edit.gpt_rome_rocamena rm set cat = 'Otro' where cat = 'OTRO' and cd_mtra = vCodigoMuestra;
+  
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Anomalias'
+     where cat = 'ANOM';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Cantera'
+     where cat = 'CANT';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Deposito'
+     where cat = 'DEPO';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Mina'
+     where cat = 'MINA';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Ocurrencia'
+     where cat = 'OCUR';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Otro'
+     where cat = 'OTRO';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Prospecto'
+     where cat = 'PROS';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Proyecto'
+     where cat = 'PROY';
+    --       and cd_mtra = vCodigoMuestra;
+    update data_edit.gpt_rome_rocamena rm
+       set cat = 'Yacimiento'
+     where cat = 'YACI';
+    --     and cd_mtra = vCodigoMuestra;
+    ---Campo Estado Actual
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Ampliacion'
+     where est_mn = 'AMPL';
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Abandonada'
+     where est_mn = 'ABAN';
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Cierre'
+     where est_mn = 'CERR';
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Paralizado'
+     where est_mn = 'PARA';
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Desarrollo'
+     where est_mn = 'EXPT';
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Exploracion'
+     where est_mn = 'EXPL';
+    --    update data_edit.gpt_rome_rocamena rm set est_mn = '' where est_mn = 'PROS';
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Produccion'
+     where est_mn = 'PROD';
+    update data_edit.gpt_rome_rocamena rm
+       set est_mn = 'Produccion'
+     where est_mn = 'PROD';
+    ----------------Analisis Químicos----------------------------
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'EM'
+     where /*cd_mtra = vCodigoMuestra and*/
+     tipo = 1
+     AND ANALISIS = '1';
+  
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'REE'
+     where /*cd_mtra = vCodigoMuestra and */
+     tipo = 1
+     AND ANALISIS = '2';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'ET'
+     where /*cd_mtra = vCodigoMuestra and */
+     tipo = 1
+     AND ANALISIS = '3';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'FA'
+     where /*cd_mtra = vCodigoMuestra and */
+     tipo = 1
+     AND ANALISIS = '4';
+  
+    ---------------Analisis Petromineralógicos-------------------------------------------------
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'PIMA'
+     where /*cd_mtra = vCodigoMuestra and*/
+     tipo = 2
+     AND ANALISIS = '1';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'SD'
+     where /*cd_mtra = vCodigoMuestra and */
+     tipo = 2
+     AND ANALISIS = '2';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'SP'
+     where /*cd_mtra = vCodigoMuestra and */
+     tipo = 2
+     AND ANALISIS = '3';
+  
+    ---------------Otros Analisisis-------------------------------------------------
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'Isotopos'
+     where /*cd_mtra = vCodigoMuestra and*/
+     tipo = 3
+     AND ANALISIS = '1';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'Geocrono'
+     where /*cd_mtra = vCodigoMuestra and*/
+     tipo = 3
+     AND ANALISIS = '2';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'DRx'
+     where /*cd_mtra = vCodigoMuestra and*/
+     tipo = 3
+     AND ANALISIS = '3';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'IF'
+     where /*cd_mtra = vCodigoMuestra and*/
+     tipo = 3
+     AND ANALISIS = '4';
+    update data_edit. tb_rome_05_analisis
+       set analisis = 'Microsonda'
+     where /*cd_mtra = vCodigoMuestra and*/
+     tipo = 3
+     AND ANALISIS = '5';
+  
+    ------------Tipo de Muestras------------------------------------------------------------------------
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRA = 'Mena'
+     where /*cd_mtra = vCodigoMuestra and*/
+     T_MTRA = '1';
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRA = 'RocaAl'
+     where /*cd_mtra = vCodigoMuestra and*/
+     T_MTRA = '2';
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRA = 'RocaIna'
+     where /*cd_mtra = vCodigoMuestra and */
+     T_MTRA = '3';
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRA = 'otro'
+     where /*cd_mtra = vCodigoMuestra and*/
+     T_MTRA = '4';
+    ------------Tipo de Muesteo------------------------------------------------------------------------
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRO = 'EsquirlasRoca'
+     where /*cd_mtra = vCodigoMuestra and*/
+     T_MTRO = '1';
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRO = 'Canal'
+     where /*cd_mtra = vCodigoMuestra and*/
+     T_MTRO = '2';
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRO = 'Especial'
+     where /*cd_mtra = vCodigoMuestra and*/
+     T_MTRO = '3';
+    update data_edit.GPT_ROME_RocaMena
+       set T_MTRO = 'otro'
+     where /*cd_mtra = vCodigoMuestra and*/
+     T_MTRO = '4';
+  
+    ------------Carga Litologia-----------------------
+    Begin
+      for r in (select rm.codigo_muestra, l.litologico
+                  from BDGRMS_D_CONTROL_LOCAL L
+                 inner join BDGRMS_D_ROCA_MENA RM
+                    on rm.codigo_interno_muestra = l.codigo_interno_muestra
+                   and l.litologico is not null) loop
+        update DATA_EDIT.GPT_ROME_RocaMena gr
+           set gr.u_litoestratigrafica = substr(r.litologico, 1, 100)
+         where gr.cd_mtra = r.codigo_muestra
+           and gr.sub_proy = pSubProy;
+      end loop;
+    End;
+  
+    --------Tipo de Depósito-------------------------
+    update data_edit.TB_ROME_01_DEPOSITO
+       set deposito = 'III'
+     where deposito in ('IIIa', 'IIIc', 'IIId', 'IIIe', 'IIIf', 'IIIg');
+    update data_edit.TB_ROME_01_DEPOSITO
+       set deposito = 'VI'
+     where deposito in ('VIa', 'VIb', 'VIc');
+    update data_edit.TB_ROME_01_DEPOSITO
+       set deposito = 'IV'
+     where deposito in ('IVa');
+  
+    ----------------------Subtipo-----------------------------------------
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|a1'
+     where st_deposito = 'IIIa|1';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|a2'
+     where st_deposito = 'IIIa|2';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|a3'
+     where st_deposito = 'IIIa|3';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|a4'
+     where st_deposito = 'IIIa|4';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|c2'
+     where st_deposito = 'IIIc|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|d'
+     where st_deposito = 'IIId|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|e1'
+     where st_deposito = 'IIIe|1';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|e2'
+     where st_deposito = 'IIIe|2';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|e3'
+     where st_deposito = 'IIIe|3';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|e4'
+     where st_deposito = 'IIIe|4';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|f'
+     where st_deposito = 'IIIf|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|g'
+     where st_deposito = 'IIIg|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'IV|a'
+     where st_deposito = 'IVa|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'III|g'
+     where st_deposito = 'IIIg|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'IVa|1'
+     where st_deposito = 'IVa|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'VIb|1'
+     where st_deposito = 'VIb|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'VIc|1'
+     where st_deposito = 'VIc|';
+    update data_edit.TB_ROME_01_DEPOSITO
+       set st_deposito = 'VIII'
+     where st_deposito = 'VIII|';
+    --mover campo------
+    update data_edit.gpt_rome_rocamena
+       set textura = substr(txtu_r_caja, 1, 20), txtu_r_caja = null
+     where sub_proy = pSubProy;
+  
+    ----campo intensidad----------------
+    update data_edit.TB_ROME_03_ALTERACION
+       set intensidad = 'Traza'
+     where intensidad = '0';
+    update data_edit.TB_ROME_03_ALTERACION
+       set intensidad = 'Debil'
+     where intensidad = '1';
+    update data_edit.TB_ROME_03_ALTERACION
+       set intensidad = 'Moderado'
+     where intensidad = '2';
+    update data_edit.TB_ROME_03_ALTERACION
+       set intensidad = 'Fuerte'
+     where intensidad = '3';
+    update data_edit.TB_ROME_03_ALTERACION
+       set intensidad = 'Intensa-Comp'
+     where intensidad = '4';
+    commit;
+    OUT_MENSAJE := 'Ok';
+  EXCEPTION
+    WHEN OTHERS THEN
+      --OUT_ESTADO  := 2;
+      OUT_MENSAJE := SQLERRM;
+      ROLLBACK;
+  END P_OPE_MIGRAR_DATA_DK;
+
+  procedure ptabla(OUT_CURSOR OUT SYS_REFCURSOR) IS
+    consulta varchar2(4000);
+    cadena   varchar2(4000);
+  Begin
+    for r in (select elemento
+                from DATA_EDIT.TB_RM_05_LABORATORIO r
+               where cd_mtra = 'prueba-0001'
+               order by orden) loop
+      cadena := cadena || '''' || r.elemento || '''' || ',';
+    end loop;
+    cadena := substr(cadena, 1, length(cadena) - 1);
+  
+    consulta := 'select * from ( select cd_mtra, elemento, valor from data_edit.TB_RM_05_LABORATORIO r /*where cd_mtra = ''prueba-0001''*/)';
+    consulta := consulta || ' pivot (sum(valor) for elemento in (' ||
+                cadena || '))';
+    dbms_output.put_line(consulta);
+    --EXECUTE IMMEDIATE consulta;
+    open OUT_CURSOR for consulta;
+  End;
+
+  /*  PROCEDURE P_IMPORT_FOTO(V_TIPO                   VARCHAR2,
+                            V_CODIGO_INTERNO_MUESTRA IN VARCHAR2,
+                            v_codigo_foto            IN VARCHAR2,
+                            v_nombre_archivo         IN VARCHAR2,
+                            v_titulo                 IN VARCHAR2,
+                            v_descripcion            IN VARCHAR2,
+                            v_Correlativo            IN VARCHAR2,
+                            V_BL_FOTO                IN blob,
+                            p_RETORNO                OUT VARCHAR2) IS
+    
+      VI_NU_Foto      number;
+      v_Correlativo_1 number;
+    
+      IN_CODIGOMUESTRA varchar2(30);
+      IN_TITULO        varchar2(500);
+      IN_DESCP         varchar2(500);
+      v_orden          number(4);
+      V_OBJECTID       number(6);
+    
+    BEGIN
+      SELECT CODIGO_FOTO, TITULO, DESCRIPCION
+        into IN_CODIGOMUESTRA, IN_TITULO, IN_DESCP
+        FROM BDGRMS_D_ROCA_MENA r
+       inner join AG_D_FOTO F
+          on f.codigo_interno_muestra = r.codigo_interno_muestra
+         and r.codigo_interno_proyecto in (415, 469, 413, 248)
+       WHERE F.CODIGO_INTERNO_MUESTRA = TO_NUMBER(V_CODIGO_INTERNO_MUESTRA);
+    
+      SELECT NVL(MAX(ORDEN), 0) + 1
+        INTO V_ORDEN
+        FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+       WHERE CD_MTRA = IN_CODIGOMUESTRA;
+    
+      SELECT NVL(MAX(OBJECTID) + 1, 1)
+        INTO V_OBJECTID
+        FROM DATA_EDIT.TB_RM_06_MULTIMEDIA;
+    
+      -- if VI_NU_Foto > 0 then     
+      IF v_Tipo = 'INS' then
+      
+        INSERT INTO DATA_EDIT.TB_RM_06_MULTIMEDIA
+          (objectid,
+           cd_mtra,
+           titulo,
+           fecha,
+           autor,
+           tipo,
+           link,
+           dscp,
+           obs,
+           archivo,
+           ext_arch,
+           orden,
+           --historial,
+           f_registro,
+           registrado,
+           globalid)
+        VALUES
+          (V_OBJECTID,
+           IN_CODIGOMUESTRA,
+           IN_TITULO,
+           sysdate,
+           'DHM',
+           'Foto',
+           null,
+           IN_DESCP,
+           null,
+           V_BL_FOTO,
+           '.jpg',
+           V_ORDEN,
+           --'A',
+           SYSDATE,
+           'DHUANACUNI',
+           sde.version_user_ddl.retrieve_guid);
+      
+      ELSIF VI_NU_Foto > 0 and V_TIPO = 'UPD' then
+        update DATA_EDIT.TB_RM_06_MULTIMEDIA
+           set archivo = V_BL_FOTO
+         where cd_mtra = IN_CODIGOMUESTRA;
+        --and correlativo = to_number(v_Correlativo_1);
+        --  end if;
+      END IF;
+      p_RETORNO := 1;
+    
+    EXCEPTION
+      WHEN OTHERS THEN
+        p_RETORNO := 0;
+        --ROLLBACK;
+      --RAISE_APPLICATION_ERROR(-20000, SQLCODE || ' ' || SQLERRM);
+    
+    END P_IMPORT_FOTO;
+  */
+
+  PROCEDURE P_IMPORT_FOTO(V_TIPO                   VARCHAR2,
+                          V_CODIGO_INTERNO_MUESTRA IN VARCHAR2,
+                          v_codigo_foto            IN VARCHAR2,
+                          v_nombre_archivo         IN VARCHAR2,
+                          v_titulo                 IN VARCHAR2,
+                          v_descripcion            IN VARCHAR2,
+                          v_Correlativo            IN VARCHAR2,
+                          V_BL_FOTO                IN blob,
+                          p_RETORNO                OUT VARCHAR2) IS
+  
+    VI_NU_Foto      number;
+    v_Correlativo_1 number;
+  
+    IN_CODIGOMUESTRA varchar2(30);
+    IN_TITULO        varchar2(500);
+    IN_DESCP         varchar2(500);
+    v_orden          number(4);
+    V_OBJECTID       number(6);
+    V_REGISTRO       number(6);
+  
+  BEGIN
+  
+    SELECT CODIGO_FOTO, TITULO, DESCRIPCION
+      into IN_CODIGOMUESTRA, IN_TITULO, IN_DESCP
+      FROM BDGRMS_D_ROCA_MENA r
+     inner join AG_D_FOTO F
+        on f.codigo_interno_muestra = r.codigo_interno_muestra
+    --and r.codigo_interno_proyecto in (415, 469, 413, 248)
+     WHERE F.CODIGO_INTERNO_MUESTRA = TO_NUMBER(V_CODIGO_INTERNO_MUESTRA)
+       and rownum = 1;
+  
+    SELECT NVL(MAX(ORDEN), 0) + 1
+      INTO V_ORDEN
+      FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+     WHERE CD_MTRA = IN_CODIGOMUESTRA;
+  
+    SELECT NVL(MAX(OBJECTID) + 1, 1)
+      INTO V_OBJECTID
+      FROM DATA_EDIT.TB_RM_06_MULTIMEDIA;
+  
+    -- if VI_NU_Foto > 0 then     
+    --    IF v_Tipo = 'INS' then
+  
+    IF V_CODIGO_INTERNO_MUESTRA = '0' then
+    
+      INSERT INTO DATA_EDIT.TB_RM_06_MULTIMEDIA
+        (objectid,
+         cd_mtra,
+         titulo,
+         fecha,
+         autor,
+         tipo,
+         link,
+         dscp,
+         obs,
+         archivo,
+         ext_arch,
+         orden,
+         --historial,
+         f_registro,
+         registrado,
+         globalid)
+      VALUES
+        (V_OBJECTID,
+         IN_CODIGOMUESTRA,
+         IN_TITULO,
+         sysdate,
+         'DHM',
+         'Foto',
+         null,
+         IN_DESCP,
+         null,
+         V_BL_FOTO,
+         '.jpg',
+         V_ORDEN,
+         --'A',
+         SYSDATE,
+         'DHUANACUNI',
+         sde.version_user_ddl.retrieve_guid);
+    
+      --ELSIF VI_NU_Foto > 0 and V_TIPO = 'UPD' then
+    ELSE
+      SELECT COUNT(*)
+        INTO V_REGISTRO
+        FROM DATA_EDIT.TB_RM_06_MULTIMEDIA
+       WHERE CD_MTRA =
+             (SELECT CODIGO_MUESTRA
+                FROM BDGRMS_D_ROCA_MENA R
+               WHERE R.CODIGO_INTERNO_MUESTRA = V_CODIGO_INTERNO_MUESTRA)
+         AND ORDEN = V_CORRELATIVO;
+    
+      IF V_REGISTRO > 0 THEN
+        /* update DATA_EDIT.TB_RM_06_MULTIMEDIA
+             set archivo = V_BL_FOTO
+           where CD_MTRA =
+                 (SELECT codigo_muestra
+                    FROM BDGRMS_D_ROCA_MENA R
+                   WHERE r.codigo_interno_muestra = V_CODIGO_INTERNO_MUESTRA);
+        */
+        /*        INSERT INTO X
+        VALUES
+          ((SELECT codigo_muestra
+             FROM BDGRMS_D_ROCA_MENA R
+            WHERE r.codigo_interno_muestra = V_CODIGO_INTERNO_MUESTRA),
+           V_CODIGO_INTERNO_MUESTRA || ' --> Update',
+           SYSDATE);*/
+        dbms_output.put_line('Update');
+      ELSE
+        SELECT NVL(MAX(OBJECTID) + 1, 1)
+          INTO V_OBJECTID
+          FROM DATA_EDIT.TB_RM_06_MULTIMEDIA;
+      
+        INSERT INTO DATA_EDIT.TB_RM_06_MULTIMEDIA
+          (objectid,
+           cd_mtra,
+           titulo,
+           fecha,
+           autor,
+           tipo,
+           link,
+           dscp,
+           obs,
+           archivo,
+           ext_arch,
+           orden,
+           --historial,
+           f_registro,
+           registrado,
+           globalid)
+        VALUES
+          (V_OBJECTID,
+           (SELECT codigo_muestra
+              FROM BDGRMS_D_ROCA_MENA R
+             WHERE r.codigo_interno_muestra = V_CODIGO_INTERNO_MUESTRA),
+           IN_TITULO,
+           sysdate,
+           'DHM',
+           'Foto',
+           'Nuevo: ' || sysdate,
+           IN_DESCP,
+           null,
+           V_BL_FOTO,
+           '.jpg',
+           v_Correlativo,
+           --'A',
+           SYSDATE,
+           'DHUANACUNI',
+           sde.version_user_ddl.retrieve_guid);
+      
+        INSERT INTO X
+        VALUES
+          ((SELECT codigo_muestra
+             FROM BDGRMS_D_ROCA_MENA R
+            WHERE r.codigo_interno_muestra = V_CODIGO_INTERNO_MUESTRA),
+           V_CODIGO_INTERNO_MUESTRA || ' --> Nuevo' || 'Correlativo: ' ||
+           v_Correlativo,
+           SYSDATE);
+      END IF;
+    
+    END IF;
+    p_RETORNO := 1;
+    COMMIT;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      p_RETORNO := 0;
+      --ROLLBACK;
+      RAISE_APPLICATION_ERROR(-20000, SQLCODE || ' ' || SQLERRM);
+    
+  END P_IMPORT_FOTO;
+
+  PROCEDURE P_DELETE_TABLA_RM(IN_UNIDAD VARCHAR2, OUT_MENSAJE OUT VARCHAR2) IS
+    --    v_OID number(5);
+  BEGIN
+    --SELECT OBJECTID INTO V_OID FROM DATA_EDIT.GPT_YM_YACMIN Y WHERE Y.UNIDAD = IN_UNIDAD and rownum = 1;
+    DELETE FROM DATA_EDIT.TB_RM_01_LITOLOGIA RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.TB_RM_CARACTMIN_ALTER RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.TB_RM_02_MINERALIZACION RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.TB_RM_MINERALIZACION_ESTR RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.TB_RM_03_ACTMINERA RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.TB_RM_04_TIPOMUESTRA RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.TB_RM_05_LABORATORIO RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.TB_RM_06_MULTIMEDIA RM
+     WHERE RM.CD_MTRA = IN_UNIDAD
+       AND ROWNUM = 1;
+    DELETE FROM DATA_EDIT.GPT_RM_ROCA_MENA RM WHERE RM.CD_MTRA = IN_UNIDAD;
+  
+    commit;
+    OUT_MENSAJE := 'Ok';
+    --  EXCEPTION
+    --    WHEN OTHERS THEN
+    --      OUT_MENSAJE := 'Error';
+    --      ROLLBACK;
+  END P_DELETE_TABLA_RM;
+
+  PROCEDURE P_FICHA_REPORTE(IN_CD_MUESTRA VARCHAR2,
+                            OUT_CURSOR    OUT SYS_REFCURSOR) IS
+  
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      SELECT R.CD_MTRA CD_MUESTRA,
+             to_char(R.F_MTRA, 'DD/MM/YYYY') FECHA,
+             --             R.COLECTADO,
+             (select nombres_y_apellidos
+                from bdt_m_integrante
+               where usuario = R.COLECTADO) colectado,
+             R.A_ITS AINTERES,
+             R.CAT CATEGORIA,
+             R.EST_MIN ESTADOMINA,
+             R.ESTE este,
+             R.NORTE norte,
+             'WGS-84' DATUM,
+             R.ZONA,
+             R.ALTITUD,
+             R.LATITUD,
+             R.LONGITUD,
+             --             R.HOJA,
+             (select descripcion
+                from ged_m_lista
+               where tipo = '04_DC_CUADRANGULO'
+                 and codigo = r.hoja) HOJA,
+             (Select replace(initcap(descripcion), ' De ', ' de ')
+                FROM GED_M_LISTA
+               WHERE TIPO = 'DEPARTAMENTO'
+                 AND CODIGO = R.REGION) REGION,
+             (Select replace(initcap(descripcion), ' De ', ' de ')
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_DC_LIMPROVINCIA'
+                 AND CODIGO = R.PROVINCIA) PROVINCIA,
+             (Select replace(initcap(descripcion), ' De ', ' de ')
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_DC_LIMDISTRITO'
+                 AND CODIGO = R.DISTRITO) DISTRITO,
+             F_NOMBRE_CARACT_MINERAL(R.CD_MTRA, 1) Mena,
+             F_NOMBRE_CARACT_MINERAL(R.CD_MTRA, 2) Ganga,
+             (SELECT DESCRIPCION
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_RH_TIPO'
+                 AND CODIGO = L.T_ROCA) T_ROCA,
+             (SELECT DESCRIPCION
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_RH_SUBTIPO'
+                 AND CODIGO = L.ST_DEPOSITO) ST_ROCA,
+             (SELECT DESCRIPCION
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_RH_ROCA'
+                 AND CODIGO = L.ROCA_MINERAL) ROCA,
+             L.GEOMETRIA,
+             L.TEXTURA,
+             (SELECT SUBSTR(DESCRIPCION, INSTR(DESCRIPCION, '|') + 1)
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_DC_YACTIPO'
+                 AND CODIGO = (SELECT DEPOSITO
+                                 FROM DATA_EDIT.TB_RM_01_LITOLOGIA
+                                WHERE CD_MTRA = R.CD_MTRA
+                                  AND ROWNUM = 1)) T_DEPOSITO,
+             F_NOMBRE_ST_YACIMIENTO(R.CD_MTRA) ST_YACIMIENTO,
+             A.ACT_PRD ACT_PRD,
+             (select descripcion
+                from ged_m_lista g
+               where tipo = '04_DC_MINAESCALA'
+                 and codigo = A.ACT_SC_PRD) ACT_SC_PRD,
+             A.ACT_RR_RSV ACT_RR_RSV,
+             A.ACT_DATO ACT_DATO,
+             (select descripcion
+                from ged_m_lista g
+               where tipo = '04_DC_MUESTRA'
+                 and codigo = T.T_MTRA) T_MTRA,
+             T.DSCP_MTRA,
+             (select descripcion
+                from ged_m_lista g
+               where tipo = '04_DC_MUESTREO'
+                 and codigo = T.T_MTRO) T_MTRO,
+             T.DSCP_MTRO,
+             T.ANA_EESP,
+             T.ANA_GEOQ,
+             T.ANA_PETRO,
+             T.ANA_OTROS
+      
+        FROM DATA_EDIT.GPT_RM_ROCA_MENA R
+       INNER JOIN DATA_EDIT.TB_RM_01_LITOLOGIA L
+          ON L.CD_MTRA = R.CD_MTRA
+       INNER JOIN DATA_EDIT.TB_RM_03_ACTMINERA A
+          ON A.CD_MTRA = R.CD_MTRA
+       INNER JOIN DATA_EDIT.TB_RM_04_TIPOMUESTRA T
+          ON T.CD_MTRA = R.CD_MTRA
+       WHERE R.CD_MTRA = IN_CD_MUESTRA;
+  
+  END P_FICHA_REPORTE;
+
+  PROCEDURE P_FICHA_CAR_ALTERACION(IN_CD_MUESTRA VARCHAR2,
+                                   OUT_CURSOR    OUT SYS_REFCURSOR) IS
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      SELECT AL.CD_MTRA CD_MUESTRA,
+             (SELECT DESCRIPCION
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_DC_ALTRHIDROTERMAL'
+                 AND CODIGO = AL.ALTERACION) ALTERACION,
+             (SELECT DESCRIPCION
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_DC_GRUPO_ALTERACION'
+                 AND CODIGO = AL.GRUPO_ALTR) GRUPO,
+             (SELECT DESCRIPCION
+                FROM GED_M_LISTA
+               WHERE TIPO = '04_DC_MINERAL_ALTERACION'
+                 AND CODIGO = AL.MINERAL) MINERAL,
+             AL.INTENSIDAD,
+             AL.E_ALTERACION
+        FROM DATA_EDIT.TB_RM_CARACTMIN_ALTER AL
+       WHERE AL.CD_MTRA = IN_CD_MUESTRA;
+  
+  END P_FICHA_CAR_ALTERACION;
+
+  FUNCTION F_ELE_VALOR(IN_CODMUESTRA  VARCHAR2,
+                       IN_ESTUDIO_LAB VARCHAR2,
+                       IN_ELEMENTO    VARCHAR2) RETURN VARCHAR2 IS
+    --    V_VALOR NUMBER(10, 5);
+    V_VALOR VARCHAR2(12);
+  BEGIN
+    V_VALOR := 0;
+    --   SELECT  SUM(DECODE(VALOR, 0, 0, VALOR)) INTO V_VALOR 
+    --    FROM DATA_EDIT.TB_RM_05_LABORATORIO M
+    --    WHERE M.CD_MTRA = IN_CODMUESTRA AND CD_ESTUDIO_LABO = IN_ESTUDIO_LAB  AND ELEMENTO = IN_ELEMENTO AND ROWNUM = 1
+    --;
+  
+    SELECT G.DESCRIPCION || '' || TRIM(TO_CHAR(VALOR, '9990.09'))
+      INTO V_VALOR
+      FROM DATA_EDIT.TB_RM_05_LABORATORIO M
+     INNER JOIN GED_M_LISTA G
+        ON M.SIMBOLO = G.CODIGO
+       AND G.TIPO = '04_DC_APROXIMACION'
+       AND M.CD_MTRA = IN_CODMUESTRA
+       AND CD_ESTUDIO_LABO = IN_ESTUDIO_LAB
+       AND ELEMENTO = IN_ELEMENTO
+       AND ROWNUM = 1;
+    RETURN V_VALOR;
+  
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      SELECT to_char(SUM(DECODE(VALOR, 0, 0, VALOR)), '9990.09')
+        INTO V_VALOR
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO M
+       WHERE M.CD_MTRA = IN_CODMUESTRA
+         AND CD_ESTUDIO_LABO = IN_ESTUDIO_LAB
+         AND ELEMENTO = IN_ELEMENTO
+         AND ROWNUM = 1;
+      RETURN V_VALOR;
+    
+  END F_ELE_VALOR;
+
+  FUNCTION F_ELE_VALOR(IN_CODMUESTRA  VARCHAR2,
+                       IN_ESTUDIO_LAB VARCHAR2,
+                       IN_ELEMENTO    VARCHAR2,
+                       IN_SUBPROYECTO VARCHAR2) RETURN VARCHAR2 IS
+  
+    V_VALOR VARCHAR2(12);
+  BEGIN
+    V_VALOR := 0;
+  
+    SELECT G.DESCRIPCION || '' || TRIM(TO_CHAR(VALOR, '9990.09'))
+      INTO V_VALOR
+      FROM DATA_EDIT.TB_RM_05_LABORATORIO M
+     INNER JOIN GED_M_LISTA G
+        ON M.SIMBOLO = G.CODIGO
+       AND G.TIPO = '04_DC_APROXIMACION'
+       AND M.CD_MTRA = IN_CODMUESTRA
+       AND CD_ESTUDIO_LABO = IN_ESTUDIO_LAB
+       AND ELEMENTO = IN_ELEMENTO
+       AND ROWNUM = 1
+       AND M.CD_SUB_PROY = IN_SUBPROYECTO;
+    RETURN V_VALOR;
+  
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      SELECT to_char(SUM(DECODE(VALOR, 0, 0, VALOR)), '9990.09')
+        INTO V_VALOR
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO M
+       WHERE M.CD_MTRA = IN_CODMUESTRA
+         AND CD_ESTUDIO_LABO = IN_ESTUDIO_LAB
+         AND ELEMENTO = IN_ELEMENTO
+         AND ROWNUM = 1
+         AND M.CD_SUB_PROY = IN_SUBPROYECTO;
+      RETURN V_VALOR;
+    
+  END F_ELE_VALOR;
+
+  PROCEDURE P_ELE_VALOR(COD_MUESTRA VARCHAR2,
+                        COD_ESTUDIO VARCHAR2,
+                        OUT_CURSOR  OUT SYS_REFCURSOR) IS
+    CADENA varchar2(4000);
+  BEGIN
+    CADENA := '';
+    FOR R IN (SELECT *
+                FROM DATA_EDIT.TB_RM_05_LABORATORIO M
+               WHERE M.CD_MTRA = COD_MUESTRA
+                 AND CD_ESTUDIO_LABO = COD_ESTUDIO
+               ORDER BY ORDEN) LOOP
+    
+      --cadena := cadena || 'pack_dba_bdgeo_roca_mena.f_signo(''' ||
+      -- r.Simbolo || ''') || ' ;
+    
+      cadena := cadena || 'pack_dba_bdgeo_roca_mena.f_ele_valor(''' ||
+                r.cd_mtra || ''', ''' || r.cd_estudio_labo || ''', ''' ||
+                r.elemento || ''') ' || chr(34) || r.elemento || chr(34) || ',';
+    
+    --  DBMS_OUTPUT.PUT_LINE(CADENA);
+    
+    END LOOP;
+    CADENA := SUBSTR(CADENA, 1, LENGTH(CADENA) - 1);
+  
+    CADENA := 'select ' || cadena || ' from dual';
+    DBMS_OUTPUT.PUT_LINE(CADENA);
+    --EXECUTE IMMEDIATE CONSULTA;
+    OPEN OUT_CURSOR FOR CADENA;
+  END;
+
+  FUNCTION F_SIGNO(IN_CODIGO VARCHAR2) RETURN VARCHAR2 IS
+    CADENA VARCHAR2(5);
+  BEGIN
+    CADENA := '';
+    SELECT DESCRIPCION
+      INTO CADENA
+      FROM GED_M_LISTA
+     WHERE TIPO = '04_DC_APROXIMACION'
+       AND CODIGO = IN_CODIGO;
+  
+    RETURN CADENA;
+  END F_SIGNO;
+
+  PROCEDURE P_LISTAR_ANA_LABORATORIO1(IN_COD_MUESTRA VARCHAR2,
+                                      IN_COD_ESTUDIO VARCHAR2,
+                                      OUT_CURSOR     OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      select r.cd_laboratorio || ' - ' ||
+             (SELECT ADICIONAL
+                FROM GED_M_LISTA L
+               WHERE TIPO = '04_DC_ESTUDIO_LABORATORIO'
+                 AND CODIGO = R.CD_ESTUDIO_LABO) CD_MTRA,
+             R.ELEMENTO || ' (' || R.UNIDAD || ')' ELEMENTO,
+             PACK_DBA_BDGEO_ROCA_MENA.F_ELE_VALOR(R.CD_MTRA,
+                                                  R.CD_ESTUDIO_LABO,
+                                                  R.ELEMENTO) VALOR
+      
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO R
+       WHERE CD_MTRA = IN_COD_MUESTRA
+         AND (IN_COD_ESTUDIO is null or R.CD_ESTUDIO_LABO = IN_COD_ESTUDIO)
+       ORDER BY orden;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_LISTAR_ANA_LABORATORIO1;
+
+  PROCEDURE P_LISTAR_ANA_LABORATORIO(IN_COD_MUESTRA VARCHAR2,
+                                     IN_COD_ESTUDIO VARCHAR2,
+                                     IN_SUBPROYECTO VARCHAR2,
+                                     OUT_CURSOR     OUT SYS_REFCURSOR) IS
+    V_ERROR VARCHAR2(100);
+  BEGIN
+    OPEN OUT_CURSOR FOR
+      SELECT R.CD_LABORATORIO || ' - ' ||
+             (SELECT ADICIONAL
+                FROM GED_M_LISTA L
+               WHERE TIPO = '04_DC_ESTUDIO_LABORATORIO'
+                 AND CODIGO = R.CD_ESTUDIO_LABO) CD_MTRA,
+             R.ELEMENTO || ' (' || R.UNIDAD || ')' ELEMENTO,
+             PACK_DBA_BDGEO_ROCA_MENA.F_ELE_VALOR(R.CD_MTRA,
+                                                  R.CD_ESTUDIO_LABO,
+                                                  R.ELEMENTO,
+                                                  IN_SUBPROYECTO) VALOR
+      
+        FROM DATA_EDIT.TB_RM_05_LABORATORIO R
+       WHERE CD_MTRA = IN_COD_MUESTRA
+         AND (IN_COD_ESTUDIO IS NULL OR R.CD_ESTUDIO_LABO = IN_COD_ESTUDIO)
+         AND R.CD_SUB_PROY = IN_SUBPROYECTO
+       ORDER BY ORDEN;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      V_ERROR := SQLCODE || ' ' || SQLERRM;
+      RAISE_APPLICATION_ERROR(-20000, V_ERROR);
+  END P_LISTAR_ANA_LABORATORIO;
+
+  PROCEDURE P_CAMBIO_MUESTRA(IN_CODIGO_OLD VARCHAR2,
+                             IN_CODIGO_NEW VARCHAR2,
+                             OUT_ESTADO    OUT NUMBER,
+                             OUT_MENSAJE   OUT VARCHAR2,
+                             OUT_RETVAL    OUT NUMBER) IS
+  
+    cod_muestra_old varchar2(50);
+    cod_muestra_new varchar2(50);
+  BEGIN
+    cod_muestra_old := IN_CODIGO_OLD;
+    cod_muestra_new := IN_CODIGO_NEW;
+  
+    UPDATE DATA_EDIT.TB_RM_01_LITOLOGIA
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.TB_RM_CARACTMIN_ALTER
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.TB_RM_02_MINERALIZACION
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.TB_RM_MINERALIZACION_ESTR
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.TB_RM_03_ACTMINERA
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.TB_RM_04_TIPOMUESTRA
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.TB_RM_05_LABORATORIO
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.TB_RM_06_MULTIMEDIA
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+    UPDATE DATA_EDIT.GPT_RM_ROCA_MENA
+       SET CD_MTRA = IN_CODIGO_NEW
+     WHERE CD_MTRA = IN_CODIGO_OLD;
+  
+    OUT_ESTADO := 1;
+    OUT_RETVAL := 1;
+    COMMIT;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      OUT_RETVAL := 0;
+      OUT_ESTADO := 0;
+  END P_CAMBIO_MUESTRA;
+
+  FUNCTION F_ESTUDIOS_LABORATORIO(pCodMuestra VARCHAR2) RETURN varchar2 IS
+    CADENA VARCHAR2(1000);
+  BEGIN
+    FOR R IN (SELECT DISTINCT (SELECT ADICIONAL
+                                 FROM GED_M_LISTA
+                                WHERE TIPO = '04_DC_ESTUDIO_LABORATORIO'
+                                  AND CODIGO = LB.CD_ESTUDIO_LABO) ESTUDIO,
+                              CD_LABORATORIO
+                FROM DATA_EDIT.TB_RM_05_LABORATORIO LB
+               WHERE LB.CD_MTRA = pCodMuestra
+                 AND LB.CD_ESTUDIO_LABO IS NOT NULL) LOOP
+      CADENA := CADENA || R.CD_LABORATORIO || ': ' || trim(R.ESTUDIO) ||
+                ' <br>';
+    END LOOP;
+    return cadena;
+  
+  END F_ESTUDIOS_LABORATORIO;
+
+  FUNCTION F_ESTUDIOS_LABORATORIO(pCodMuestra  VARCHAR2,
+                                  pSubProyecto varchar2) RETURN varchar2 IS
+    CADENA VARCHAR2(1000);
+  BEGIN
+    FOR R IN (SELECT DISTINCT (SELECT ADICIONAL
+                                 FROM GED_M_LISTA
+                                WHERE TIPO = '04_DC_ESTUDIO_LABORATORIO'
+                                  AND CODIGO = LB.CD_ESTUDIO_LABO) ESTUDIO,
+                              CD_LABORATORIO
+                FROM DATA_EDIT.TB_RM_05_LABORATORIO LB
+               WHERE LB.CD_MTRA = PCODMUESTRA
+                 AND LB.CD_SUB_PROY = PSUBPROYECTO
+                 AND LB.CD_ESTUDIO_LABO IS NOT NULL) LOOP
+    
+      CADENA := CADENA || R.CD_LABORATORIO || ': ' || TRIM(R.ESTUDIO) ||
+                ' <br>';
+    
+    END LOOP;
+    IF CADENA IS NOT NULL THEN
+      RETURN '<font size = 2>' || CADENA || '<font>';
+    ELSE
+      RETURN NULL;
+    END IF;
+  END F_ESTUDIOS_LABORATORIO;
+
+BEGIN
+  EXECUTE IMMEDIATE 'ALTER SESSION SET NLS_LANGUAGE = SPANISH NLS_TERRITORY = SPAIN';
+END PACK_DBA_BDGEO_ROCA_MENA;
+/
