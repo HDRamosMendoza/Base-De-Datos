@@ -1,0 +1,29 @@
+USE [BD_CARGA_JMAP]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_nivelriesgo]    Script Date: 23/02/2023 15:12:49 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[SP_nivelriesgo]
+	@CCodCPNP varchar (4),
+	@FechaIni varchar (30),
+	@FechaFin varchar (30)
+
+AS  
+BEGIN 
+
+select NOMBRE_RIESGO, sum(cantidad) total
+from (
+SELECT  d.COD_CPNP, d.FECHA_REGISTRO_DENUNCIA, r.NOMBRE_RIESGO, count(d.ID_DENUNCIA_SIDPOL_L30364) cantidad
+FROM  dbo.TM_NIVEL_RIESGO r 
+INNER JOIN dbo.TM_MEDIDAS_PROTECCION  p ON p.ID_NIVEL_RIESGO = r.ID_NIVEL_RIESGO 
+INNER JOIN dbo.TM_DENUNCIAS_SIDPOL_L30364 d ON p.ID_DENUNCIA_SIDPOL = d.ID_DENUNCIA_SIDPOL_L30364
+WHERE COD_CPNP IS NOT NULL
+group by d.COD_CPNP, d.FECHA_REGISTRO_DENUNCIA, r.NOMBRE_RIESGO
+) z
+WHERE (@CCodCPNP IS NULL OR COD_CPNP = @CCodCPNP) 
+AND   (@FechaIni IS NULL OR @FechaFin IS NULL or FECHA_REGISTRO_DENUNCIA between CONVERT(datetime, @FechaIni, 120) and CONVERT(datetime, @FechaFin, 120) ) 
+group by NOMBRE_RIESGO
+
+END

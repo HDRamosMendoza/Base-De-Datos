@@ -1,0 +1,19 @@
+USE [BD_CARGA_JMAP]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_OtenerJurisdiccion]    Script Date: 23/02/2023 15:12:51 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[SP_OtenerJurisdiccion] 
+	@CodComisaria numeric (10,0),
+	@Codjurisdiccion varchar (4) OUTPUT
+
+AS  
+BEGIN 
+	SET NOCOUNT ON;
+	SELECT @Codjurisdiccion=COD_COMI_CPNP
+	from TM_EQUIVALENCIA_PNP
+	where COD_SIDPOL = @CodComisaria;
+	RETURN;
+END
